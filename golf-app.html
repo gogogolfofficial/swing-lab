@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>SWING LAB - ゴルフ改善アプリ</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green:#1a7a4a; --green-light:#2ea865; --gold:#c9a84c; --gold-light:#e8c97a;
+    --white:#f5f5f0; --gray:#8a8a7a; --dark:#1a1a16; --dark2:#242420; --dark3:#2e2e28;
+    --accent:#4ecdc4;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--dark);color:var(--white);font-family:'Noto Sans JP',sans-serif;min-height:100vh;overflow-x:hidden;}
+  body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(26,122,74,.15) 0%,transparent 50%),radial-gradient(ellipse at 80% 80%,rgba(201,168,76,.08) 0%,transparent 50%);pointer-events:none;z-index:0;}
+
+  /* HEADER */
+  .header{position:sticky;top:0;z-index:100;background:rgba(26,26,22,.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,.2);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;}
+  .logo{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:4px;background:linear-gradient(135deg,var(--gold),var(--green-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+  .logo span{font-size:10px;letter-spacing:2px;display:block;color:var(--gray);-webkit-text-fill-color:var(--gray);font-family:'Noto Sans JP',sans-serif;font-weight:300;margin-top:-4px;}
+  .date-badge{background:var(--dark3);border:1px solid rgba(201,168,76,.3);border-radius:20px;padding:6px 14px;font-size:11px;color:var(--gold);letter-spacing:1px;}
+
+  /* NAV */
+  .nav-tabs{display:flex;background:var(--dark2);border-bottom:1px solid rgba(255,255,255,.05);overflow-x:auto;scrollbar-width:none;position:sticky;top:65px;z-index:99;}
+  .nav-tabs::-webkit-scrollbar{display:none;}
+  .tab-btn{flex:none;padding:14px 20px;background:none;border:none;color:var(--gray);font-family:'Noto Sans JP',sans-serif;font-size:12px;letter-spacing:1px;cursor:pointer;transition:all .2s;border-bottom:2px solid transparent;white-space:nowrap;}
+  .tab-btn.active{color:var(--gold);border-bottom-color:var(--gold);}
+  .tab-btn .tab-icon{font-size:16px;display:block;margin-bottom:2px;}
+
+  /* PAGES */
+  .page{display:none;padding:20px;position:relative;z-index:1;}
+  .page.active{display:block;animation:fadeIn .3s ease;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+  /* SECTION TITLE */
+  .section-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;color:var(--gold);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+  .section-title::after{content:'';flex:1;height:1px;background:linear-gradient(to right,rgba(201,168,76,.4),transparent);}
+
+  /* CARD */
+  .card{background:var(--dark2);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:20px;margin-bottom:16px;}
+
+  /* CHECK */
+  .check-category{background:var(--dark3);border-radius:12px;padding:16px;margin-bottom:12px;}
+  .check-category-title{font-size:13px;font-weight:700;color:var(--green-light);letter-spacing:2px;margin-bottom:14px;text-transform:uppercase;}
+  .check-item{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04);}
+  .check-item:last-child{border-bottom:none;}
+  .check-label{font-size:14px;color:var(--white);flex:1;}
+  .rating-group{display:flex;gap:6px;}
+  .rating-btn{width:36px;height:36px;border-radius:50%;border:1.5px solid;background:none;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;}
+  .rating-btn.good{border-color:var(--green-light);color:var(--green-light);}
+  .rating-btn.mid{border-color:var(--gold);color:var(--gold);}
+  .rating-btn.bad{border-color:#e67e22;color:#e67e22;}
+  .rating-btn.selected.good{background:var(--green-light);color:var(--dark);}
+  .rating-btn.selected.mid{background:var(--gold);color:var(--dark);}
+  .rating-btn.selected.bad{background:#e67e22;color:var(--dark);}
+
+  /* INPUTS */
+  .field-group{margin-bottom:16px;}
+  .field-label{font-size:11px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:8px;display:block;}
+  .field-input,.field-textarea,.field-input select{width:100%;background:var(--dark3);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:12px 16px;color:var(--white);font-family:'Noto Sans JP',sans-serif;font-size:14px;transition:border-color .2s;resize:none;}
+  select.field-input{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%238a8a7a' d='M6 8L0 0h12z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;}
+  select.field-input option{background:var(--dark2);color:var(--white);}
+  .field-input:focus,.field-textarea:focus{outline:none;border-color:var(--green-light);}
+  .field-textarea{min-height:80px;}
+
+  /* MESSAGE BOX */
+  .message-box{background:linear-gradient(135deg,rgba(26,122,74,.2),rgba(201,168,76,.1));border:1px solid rgba(201,168,76,.3);border-radius:12px;padding:16px 20px;margin-top:16px;font-size:13px;line-height:1.8;color:var(--gold-light);letter-spacing:.5px;}
+
+  /* BUTTONS */
+  .btn{width:100%;padding:16px;border-radius:12px;border:none;font-family:'Noto Sans JP',sans-serif;font-size:14px;font-weight:700;letter-spacing:2px;cursor:pointer;transition:all .2s;margin-bottom:10px;}
+  .btn-primary{background:linear-gradient(135deg,var(--green),var(--green-light));color:var(--white);}
+  .btn-primary:hover{filter:brightness(1.1);transform:translateY(-1px);}
+  .btn-gold{background:linear-gradient(135deg,var(--gold-light),var(--gold));color:var(--dark);}
+  .btn-outline{background:none;border:1.5px solid var(--green-light);color:var(--green-light);}
+  .btn-share{background:linear-gradient(135deg,#0088cc,#0077b5);color:white;}
+
+  /* IMPROVEMENT BTNS */
+  .improvement-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;}
+  .imp-btn{padding:14px;border-radius:12px;border:none;font-family:'Noto Sans JP',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:1px;}
+  .imp-btn-yes{background:linear-gradient(135deg,var(--green),var(--green-light));color:white;}
+  .imp-btn-no{background:var(--dark3);border:1.5px solid #e67e22;color:#e67e22;}
+  .imp-btn:hover{transform:scale(1.02);}
+
+  /* DRILL */
+  .drill-filter-btn{padding:7px 14px;border-radius:20px;border:1.5px solid rgba(255,255,255,.15);background:none;color:var(--gray);font-size:11px;font-family:'Noto Sans JP',sans-serif;cursor:pointer;transition:all .2s;white-space:nowrap;}
+  .drill-filter-btn.active{background:var(--gold);border-color:var(--gold);color:var(--dark);font-weight:700;}
+  .drill-section-title{font-size:12px;letter-spacing:2px;color:var(--gold);font-weight:700;text-transform:uppercase;padding:16px 4px 8px;border-bottom:1px solid rgba(201,168,76,.2);margin-bottom:8px;}
+  .drill-card{background:var(--dark3);border-radius:14px;padding:18px;margin-bottom:12px;border-left:3px solid var(--green-light);cursor:pointer;transition:all .2s;}
+  .drill-card:hover{transform:translateX(4px);}
+  .drill-card.selected{border-left-color:var(--gold);background:rgba(201,168,76,.08);}
+  .drill-header-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+  .drill-title{font-size:15px;font-weight:700;color:var(--white);}
+  .drill-level{font-size:13px;color:var(--gold);letter-spacing:1px;}
+  .drill-symptom{font-size:11px;color:var(--accent);letter-spacing:.5px;margin-bottom:10px;padding:4px 10px;background:rgba(78,205,196,.1);border-radius:6px;display:inline-block;}
+  .drill-steps{display:flex;flex-direction:column;gap:5px;margin-bottom:10px;}
+  .drill-step{font-size:12px;color:var(--white);padding-left:12px;border-left:2px solid rgba(255,255,255,.1);line-height:1.5;}
+  .drill-focus{font-size:12px;font-weight:700;color:var(--green-light);background:rgba(26,122,74,.15);border-radius:6px;padding:6px 10px;margin-bottom:10px;}
+  .drill-tag{display:inline-block;background:rgba(26,122,74,.3);color:var(--green-light);border-radius:20px;padding:3px 10px;font-size:10px;letter-spacing:1px;margin-top:8px;margin-right:4px;}
+
+  /* THEME SELECTOR */
+  .theme-group{background:var(--dark3);border-radius:10px;padding:10px 12px;margin-bottom:6px;}
+  .theme-group-label{font-size:10px;color:var(--gold);letter-spacing:1.5px;font-weight:700;margin-bottom:8px;text-transform:uppercase;}
+  .theme-option{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer;transition:all .15s;}
+  .theme-option:last-child{border-bottom:none;}
+  .theme-radio{width:20px;height:20px;border-radius:50%;border:1.5px solid rgba(255,255,255,.2);background:none;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;position:relative;}
+  .theme-option.checked .theme-radio{border-color:var(--green-light);background:var(--green-light);}
+  .theme-option.checked .theme-radio::after{content:'';width:8px;height:8px;border-radius:50%;background:var(--dark);position:absolute;}
+  .theme-option-text{font-size:13px;color:var(--white);flex:1;line-height:1.4;}
+  .theme-option-sub{font-size:10px;color:var(--gray);margin-top:1px;}
+  .theme-badge{background:var(--green);color:white;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;display:flex;align-items:center;gap:4px;}
+
+  /* VIDEO PLAYER */
+  .video-wrapper{position:relative;background:var(--dark3);border-radius:12px;overflow:hidden;margin-bottom:10px;}
+  .video-wrapper video{width:100%;display:block;max-height:400px;object-fit:contain;}
+  .speed-controls{display:flex;align-items:center;gap:6px;padding:8px 10px;background:rgba(0,0,0,.4);flex-wrap:wrap;}
+  .speed-btn{padding:4px 10px;border-radius:20px;border:1px solid rgba(255,255,255,.2);background:none;color:var(--gray);font-size:11px;font-family:'Noto Sans JP',sans-serif;cursor:pointer;transition:all .15s;}
+  .speed-btn.active-speed{background:var(--gold);border-color:var(--gold);color:var(--dark);font-weight:700;}
+  .speed-label{font-size:10px;color:var(--gray);letter-spacing:1px;}
+
+  /* COMPARE */
+  .compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+  .compare-col{display:flex;flex-direction:column;gap:6px;}
+  .compare-col-label{font-size:10px;letter-spacing:2px;text-align:center;font-weight:700;padding:4px;}
+  .compare-upload-box{background:var(--dark3);border-radius:12px;border:1.5px dashed rgba(255,255,255,.15);aspect-ratio:9/16;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:all .2s;overflow:hidden;position:relative;}
+  .compare-upload-box:hover{border-color:var(--gold);}
+  .compare-icon{font-size:36px;opacity:.4;}
+  .compare-text{font-size:11px;color:var(--gray);letter-spacing:1px;text-align:center;}
+
+  /* YT CARD */
+  .yt-card{background:var(--dark3);border-radius:14px;padding:16px;margin-bottom:10px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .2s;text-decoration:none;}
+  .yt-card:hover{background:rgba(255,0,0,.1);}
+  .yt-icon{width:48px;height:48px;background:#ff0000;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+  .yt-info{flex:1;}
+  .yt-title{font-size:13px;font-weight:700;color:var(--white);margin-bottom:4px;line-height:1.4;}
+  .yt-sub{font-size:11px;color:var(--gray);}
+
+  /* PROGRESS */
+  .progress-item{background:var(--dark3);border-radius:14px;padding:16px;margin-bottom:12px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .2s;}
+  .progress-item:hover{border:1px solid rgba(201,168,76,.3);}
+  .progress-date{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--gold);letter-spacing:2px;min-width:50px;text-align:center;line-height:1;}
+  .progress-date span{display:block;font-family:'Noto Sans JP',sans-serif;font-size:10px;color:var(--gray);font-weight:300;letter-spacing:1px;}
+  .progress-info{flex:1;}
+  .progress-title{font-size:14px;font-weight:700;margin-bottom:4px;}
+  .progress-sub{font-size:11px;color:var(--gray);}
+  .progress-status{padding:6px 14px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:1px;white-space:nowrap;}
+  .status-improved{background:rgba(26,122,74,.3);color:var(--green-light);}
+  .status-bad{background:rgba(230,126,34,.2);color:#e67e22;}
+  .status-new{background:rgba(255,255,255,.08);color:var(--gray);}
+
+  /* PRO */
+  .pro-select-btn{flex:none;padding:8px 16px;border-radius:20px;border:1.5px solid rgba(255,255,255,.15);background:none;color:var(--gray);font-size:12px;font-family:'Noto Sans JP',sans-serif;cursor:pointer;transition:all .2s;white-space:nowrap;}
+  .pro-select-btn.active-pro{border-color:var(--gold);color:var(--gold);font-weight:700;}
+  .pro-box{background:linear-gradient(135deg,rgba(201,168,76,.15),rgba(26,122,74,.1));border:1px solid rgba(201,168,76,.3);border-radius:14px;padding:16px;}
+  .pro-name{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px;color:var(--gold);margin-bottom:4px;}
+  .pro-stat{font-size:11px;color:var(--gray);margin-bottom:12px;}
+  .pro-points{display:flex;flex-direction:column;gap:8px;text-align:left;}
+  .pro-point-item{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--white);line-height:1.5;}
+  .pro-point-num{background:var(--gold);color:var(--dark);width:18px;height:18px;border-radius:50%;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+
+  /* MODAL */
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:200;align-items:flex-end;justify-content:center;}
+  .modal-overlay.active{display:flex;}
+  .modal{background:var(--dark2);border-radius:24px 24px 0 0;padding:28px 24px;width:100%;max-width:500px;border-top:1px solid rgba(255,255,255,.08);animation:slideUp .3s ease;max-height:85vh;overflow-y:auto;}
+  @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+  .modal-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;color:var(--gold);margin-bottom:20px;text-align:center;}
+  .share-preview{background:var(--dark3);border-radius:12px;padding:16px;margin-bottom:16px;font-size:13px;line-height:1.8;color:var(--white);white-space:pre-line;}
+  .modal-close{width:100%;padding:14px;background:none;border:1px solid rgba(255,255,255,.1);border-radius:10px;color:var(--gray);font-family:'Noto Sans JP',sans-serif;font-size:14px;cursor:pointer;margin-top:8px;}
+
+  /* TOAST */
+  .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--green);color:white;padding:12px 24px;border-radius:30px;font-size:13px;font-weight:700;letter-spacing:1px;transition:transform .3s ease;z-index:300;white-space:nowrap;}
+  .toast.show{transform:translateX(-50%) translateY(0);}
+
+  .trim-controls{background:var(--dark3);border-radius:10px;padding:10px 12px;margin-top:8px;}
+  .trim-label{font-size:10px;color:var(--gold);letter-spacing:1px;font-weight:700;margin-bottom:8px;}
+  .trim-row{display:flex;align-items:center;gap:6px;margin-bottom:6px;}
+  .trim-time-label{font-size:10px;color:var(--gray);width:24px;flex-shrink:0;}
+  .trim-slider{flex:1;height:4px;-webkit-appearance:none;appearance:none;background:rgba(255,255,255,.15);border-radius:2px;outline:none;cursor:pointer;}
+  .trim-slider::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--gold);cursor:pointer;}
+  .trim-val{font-size:10px;color:var(--white);width:32px;text-align:right;flex-shrink:0;}
+  .trim-loop-btn{width:100%;padding:8px;border-radius:8px;border:1px solid var(--green-light);background:none;color:var(--green-light);font-family:'Noto Sans JP',sans-serif;font-size:11px;font-weight:700;cursor:pointer;margin-top:4px;transition:all .2s;}
+  .trim-loop-btn.active{background:var(--green-light);color:var(--dark);}
+
+  ::-webkit-scrollbar{width:4px;}
+  ::-webkit-scrollbar-track{background:var(--dark);}
+  ::-webkit-scrollbar-thumb{background:var(--dark3);border-radius:2px;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">SWING LAB<span>ゴルフ改善トラッカー</span></div>
+  <div class="date-badge" id="dateDisplay"></div>
+</div>
+
+<nav class="nav-tabs">
+  <button class="tab-btn active" onclick="showPage('check',this)"><span class="tab-icon">📋</span>チェック</button>
+  <button class="tab-btn" onclick="showPage('drill',this)"><span class="tab-icon">🏋️</span>ドリル</button>
+  <button class="tab-btn" onclick="showPage('video',this)"><span class="tab-icon">▶️</span>動画</button>
+  <button class="tab-btn" onclick="showPage('compare',this)"><span class="tab-icon">⚡</span>比較</button>
+  <button class="tab-btn" onclick="showPage('progress',this)"><span class="tab-icon">📈</span>記録</button>
+</nav>
+
+<!-- CHECK PAGE -->
+<div id="page-check" class="page active">
+  <p class="section-title">スイングチェック</p>
+
+  <div class="check-category">
+    <div class="check-category-title">① セットアップ（構え）</div>
+    <div class="check-item"><span class="check-label">前傾姿勢</span><div class="rating-group"><button class="rating-btn good" onclick="setRating(this,'setup1','good')">◎</button><button class="rating-btn mid" onclick="setRating(this,'setup1','mid')">○</button><button class="rating-btn bad" onclick="setRating(this,'setup1','bad')">△</button></div></div>
+    <div class="check-item"><span class="check-label">ボール位置</span><div class="rating-group"><button class="rating-btn good" onclick="setRating(this,'setup2','good')">◎</button><button class="rating-btn mid" onclick="setRating(this,'setup2','mid')">○</button><button class="rating-btn bad" onclick="setRating(this,'setup2','bad')">△</button></div></div>
+    <div class="check-item"><span class="check-label">肘の位置</span><div class="rating-group"><button class="rating-btn good" onclick="setRating(this,'setup3','good')">◎</button><button class="rating-btn mid" onclick="setRating(this,'setup3','mid')">○</button><button class="rating-btn bad" onclick="setRating(this,'setup3','bad')">△</button></div></div>
+  </div>
+  <div class="check-category">
+    <div class="check-category-title">② 下半身</div>
+    <div class="check-item"><span class="check-label">体重移動（左に乗れているか）</span><div class="rating-group"><button class="rating-btn good" onclick="setRating(this,'lower1','good')">◎</button><button class="rating-btn mid" onclick="setRating(this,'lower1','mid')">○</button><button class="rating-btn bad" onclick="setRating(this,'lower1','bad')">△</button></div></div>
+    <div class="check-item"><span class="check-label">伸び上がりがないか</span><div class="rating-group"><button class="rating-btn good" onclick="setRating(this,'lower2','good')">◎</button><button class="rating-btn mid" onclick="setRating(this,'lower2','mid')">○</button><button class="rating-btn bad" onclick="setRating(this,'lower2','bad')">△</button></div></div>
+  </div>
+  <div class="check-category">
+    <div class="check-category-title">③ 上半身</div>
+    <div class="check-item"><span class="check-label">手打ちになっていないか／胸を回旋できているか</span><div class="rating-group"><button class="rating-btn good" onclick="setRating(this,'upper1','good')">◎</button><button class="rating-btn mid" onclick="setRating(this,'upper1','mid')">○</button><button class="rating-btn bad" onclick="setRating(this,'upper1','bad')">△</button></div></div>
+  </div>
+  <div class="check-category">
+    <div class="check-category-title">④ フェース</div>
+    <div class="check-item"><span class="check-label">スクエアに当たっているか</span><div class="rating-group"><button class="rating-btn good" onclick="setRating(this,'face1','good')">◎</button><button class="rating-btn mid" onclick="setRating(this,'face1','mid')">○</button><button class="rating-btn bad" onclick="setRating(this,'face1','bad')">△</button></div></div>
+  </div>
+  <div class="check-category">
+    <div class="check-category-title">⑤ ミート率</div>
+    <div class="check-item"><span class="check-label">芯に当たっているか</span><div class="rating-group"><button class="rating-btn good" onclick="setRating(this,'meet1','good')">◎</button><button class="rating-btn mid" onclick="setRating(this,'meet1','mid')">○</button><button class="rating-btn bad" onclick="setRating(this,'meet1','bad')">△</button></div></div>
+  </div>
+
+  <div style="background:#ffffff;border-radius:14px;padding:14px 18px;margin-bottom:16px;box-shadow:0 2px 12px rgba(0,0,0,0.3);">
+    <div style="font-size:13px;font-weight:700;color:#111;margin-bottom:8px;">📌 改善の優先順位：基本は上から順に直す</div>
+    <div style="display:flex;flex-direction:column;gap:4px;">
+      <div style="font-size:13px;color:#222;padding:5px 0;border-bottom:1px solid #eee;">1. セットアップ</div>
+      <div style="font-size:13px;color:#222;padding:5px 0;border-bottom:1px solid #eee;">2. 下半身</div>
+      <div style="font-size:13px;color:#222;padding:5px 0;border-bottom:1px solid #eee;">3. 上半身</div>
+      <div style="font-size:13px;color:#222;padding:5px 0;border-bottom:1px solid #eee;">4. フェース</div>
+      <div style="font-size:13px;color:#222;padding:5px 0;">5. ミート</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <p class="section-title" style="font-size:16px;">本日のポイント</p>
+    <div class="field-group">
+      <label class="field-label">重点ポイント</label>
+      <input class="field-input" id="focus-point" type="text" placeholder="例：フォロースルーの伸び">
+    </div>
+    <div class="field-group">
+      <label class="field-label">改善内容</label>
+      <textarea class="field-textarea" id="improvement-note" placeholder="例：インパクト後に右肩が下がる傾向がある"></textarea>
+    </div>
+    <div class="field-group">
+      <label class="field-label">練習テーマ（1つ選択）</label>
+      <div id="theme-selector"></div>
+    </div>
+    <div id="drill-detail-panel" style="display:none;"></div>
+    <div class="message-box">💬 一度に多くを直すのではなく、<strong>1つずつ改善する</strong>ことで確実に上達します。</div>
+    <div style="margin-top:16px;">
+      <button class="btn btn-primary" onclick="saveSession()">✅ 今日の記録を保存</button>
+      <button class="btn btn-gold" onclick="openShareModal()">📤 コーチ・仲間に送る</button>
+    </div>
+  </div>
+</div>
+
+<!-- DRILL PAGE -->
+<div id="page-drill" class="page">
+  <p class="section-title">練習ドリル</p>
+  <div class="card" style="padding:14px 16px;margin-bottom:4px;">
+    <p style="font-size:11px;color:var(--gray);margin-bottom:10px;letter-spacing:1px;">カテゴリで絞り込み</p>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;">
+      <button class="drill-filter-btn active" data-cat="all" onclick="filterDrills('all',this)">すべて</button>
+      <button class="drill-filter-btn" data-cat="setup" onclick="filterDrills('setup',this)">① セットアップ</button>
+      <button class="drill-filter-btn" data-cat="lower" onclick="filterDrills('lower',this)">② 下半身</button>
+      <button class="drill-filter-btn" data-cat="upper" onclick="filterDrills('upper',this)">③ 上半身</button>
+      <button class="drill-filter-btn" data-cat="face" onclick="filterDrills('face',this)">④ フェース</button>
+      <button class="drill-filter-btn" data-cat="meet" onclick="filterDrills('meet',this)">⑤ ミート率</button>
+    </div>
+  </div>
+  <div id="drill-list"></div>
+</div>
+
+<!-- VIDEO PAGE -->
+<div id="page-video" class="page">
+  <p class="section-title">参考動画</p>
+  <div class="card" style="padding:14px 16px;margin-bottom:16px;">
+    <p style="font-size:12px;color:var(--gold);">📌 YouTubeリンクを追加</p>
+    <div style="display:flex;gap:8px;margin-top:10px;">
+      <input class="field-input" id="yt-url" placeholder="YouTube URLを貼り付け" style="flex:1;padding:10px 14px;">
+      <input class="field-input" id="yt-name" placeholder="タイトル" style="flex:1;padding:10px 14px;">
+    </div>
+    <button class="btn btn-outline" style="margin-top:10px;" onclick="addYoutubeLink()">＋ 追加</button>
+  </div>
+  <div id="video-list">
+    <a class="yt-card" href="https://www.youtube.com/results?search_query=ゴルフ+セットアップ+前傾姿勢" target="_blank"><div class="yt-icon">▶</div><div class="yt-info"><div class="yt-title">正しいセットアップ・前傾姿勢の作り方</div><div class="yt-sub">セットアップ / 初心者〜中級者</div></div></a>
+    <a class="yt-card" href="https://www.youtube.com/results?search_query=ゴルフ+体重移動+下半身リード" target="_blank"><div class="yt-icon">▶</div><div class="yt-info"><div class="yt-title">下半身リードで体重移動をマスターする</div><div class="yt-sub">下半身 / 体重移動</div></div></a>
+    <a class="yt-card" href="https://www.youtube.com/results?search_query=ゴルフ+体の回旋+スイング" target="_blank"><div class="yt-icon">▶</div><div class="yt-info"><div class="yt-title">体幹回旋でスイングが劇的に変わる</div><div class="yt-sub">上半身 / 回旋</div></div></a>
+    <a class="yt-card" href="https://www.youtube.com/results?search_query=ゴルフ+フェースコントロール+スクエア" target="_blank"><div class="yt-icon">▶</div><div class="yt-info"><div class="yt-title">フェースをスクエアに保つ3つのコツ</div><div class="yt-sub">フェース / インパクト</div></div></a>
+    <a class="yt-card" href="https://www.youtube.com/results?search_query=ゴルフ+ミート率アップ+練習" target="_blank"><div class="yt-icon">▶</div><div class="yt-info"><div class="yt-title">ミート率を上げる効果的な練習方法</div><div class="yt-sub">ミート率 / 精度向上</div></div></a>
+  </div>
+</div>
+
+<!-- COMPARE PAGE -->
+<div id="page-compare" class="page">
+  <p class="section-title">スイング比較</p>
+
+  <!-- Before/After -->
+  <div class="card">
+    <p style="font-size:13px;color:var(--gold);font-weight:700;letter-spacing:1px;margin-bottom:14px;">📹 ビフォー・アフター比較</p>
+    <div class="compare-grid">
+      <div class="compare-col">
+        <div class="compare-col-label" style="color:var(--gold);">BEFORE</div>
+        <div class="compare-upload-box" id="box-before" onclick="triggerUpload('up-before')">
+          <div class="compare-icon">📱</div><div class="compare-text">タップして<br>動画を選択</div>
+        </div>
+        <div id="wrap-before" style="display:none;">
+          <video id="vid-before" controls playsinline loop style="width:100%;max-height:280px;object-fit:contain;background:#000;border-radius:10px;display:block;"></video>
+          <div class="speed-controls">
+            <span class="speed-label">速度：</span>
+            <button class="speed-btn" onclick="setSpeed('vid-before',0.25,this)">0.25x</button>
+            <button class="speed-btn" onclick="setSpeed('vid-before',0.5,this)">0.5x</button>
+            <button class="speed-btn active-speed" onclick="setSpeed('vid-before',1,this)">1x</button>
+            <button class="speed-btn" onclick="setSpeed('vid-before',1.5,this)">1.5x</button>
+          </div>
+          <div class="trim-controls" id="trim-before">
+            <div class="trim-label">✂️ 再生範囲</div>
+            <div class="trim-row">
+              <span class="trim-time-label">開始</span>
+              <input type="range" class="trim-slider" id="trim-before-start" min="0" max="100" value="0" step="0.1" oninput="updateTrim('vid-before','trim-before-start','trim-before-end','trim-before-start-val')">
+              <span class="trim-val" id="trim-before-start-val">0.0s</span>
+            </div>
+            <div class="trim-row">
+              <span class="trim-time-label">終了</span>
+              <input type="range" class="trim-slider" id="trim-before-end" min="0" max="100" value="100" step="0.1" oninput="updateTrim('vid-before','trim-before-start','trim-before-end','trim-before-end-val')">
+              <span class="trim-val" id="trim-before-end-val">--s</span>
+            </div>
+            <button class="trim-loop-btn" id="trim-before-btn" onclick="toggleTrimLoop('vid-before','trim-before-start','trim-before-end',this)">▶ この範囲をループ再生</button>
+          </div>
+          <button onclick="resetVideo('up-before','vid-before','wrap-before','box-before')" style="width:100%;margin-top:6px;padding:8px;background:none;border:1px solid rgba(255,255,255,.1);border-radius:8px;color:var(--gray);font-size:11px;cursor:pointer;">🔄 動画を変更</button>
+        </div>
+        <input type="file" id="up-before" accept="video/*" style="display:none" onchange="loadCompareVideo(this,'vid-before','wrap-before','box-before','trim-before')">
+      </div>
+      <div class="compare-col">
+        <div class="compare-col-label" style="color:var(--green-light);">AFTER</div>
+        <div class="compare-upload-box" id="box-after" onclick="triggerUpload('up-after')">
+          <div class="compare-icon">📱</div><div class="compare-text">タップして<br>動画を選択</div>
+        </div>
+        <div id="wrap-after" style="display:none;">
+          <video id="vid-after" controls playsinline loop style="width:100%;max-height:280px;object-fit:contain;background:#000;border-radius:10px;display:block;"></video>
+          <div class="speed-controls">
+            <span class="speed-label">速度：</span>
+            <button class="speed-btn" onclick="setSpeed('vid-after',0.25,this)">0.25x</button>
+            <button class="speed-btn" onclick="setSpeed('vid-after',0.5,this)">0.5x</button>
+            <button class="speed-btn active-speed" onclick="setSpeed('vid-after',1,this)">1x</button>
+            <button class="speed-btn" onclick="setSpeed('vid-after',1.5,this)">1.5x</button>
+          </div>
+          <div class="trim-controls" id="trim-after">
+            <div class="trim-label">✂️ 再生範囲</div>
+            <div class="trim-row">
+              <span class="trim-time-label">開始</span>
+              <input type="range" class="trim-slider" id="trim-after-start" min="0" max="100" value="0" step="0.1" oninput="updateTrim('vid-after','trim-after-start','trim-after-end','trim-after-start-val')">
+              <span class="trim-val" id="trim-after-start-val">0.0s</span>
+            </div>
+            <div class="trim-row">
+              <span class="trim-time-label">終了</span>
+              <input type="range" class="trim-slider" id="trim-after-end" min="0" max="100" value="100" step="0.1" oninput="updateTrim('vid-after','trim-after-start','trim-after-end','trim-after-end-val')">
+              <span class="trim-val" id="trim-after-end-val">--s</span>
+            </div>
+            <button class="trim-loop-btn" id="trim-after-btn" onclick="toggleTrimLoop('vid-after','trim-after-start','trim-after-end',this)">▶ この範囲をループ再生</button>
+          </div>
+          <button onclick="resetVideo('up-after','vid-after','wrap-after','box-after')" style="width:100%;margin-top:6px;padding:8px;background:none;border:1px solid rgba(255,255,255,.1);border-radius:8px;color:var(--gray);font-size:11px;cursor:pointer;">🔄 動画を変更</button>
+        </div>
+        <input type="file" id="up-after" accept="video/*" style="display:none" onchange="loadCompareVideo(this,'vid-after','wrap-after','box-after','trim-after')">
+      </div>
+    </div>
+  </div>
+
+  <!-- Swing Compare -->
+  <p class="section-title" style="font-size:16px;">スイング比較</p>
+  <div class="card" style="padding:16px;">
+    <p style="font-size:12px;color:var(--gray);margin-bottom:14px;">左右に動画をアップロードして並べて確認できます</p>
+    <div class="compare-grid">
+      <div class="compare-col">
+        <div class="compare-col-label" style="color:var(--gold);">比較動画</div>
+        <div class="compare-upload-box" id="box-pro" onclick="triggerUpload('up-pro')">
+          <div class="compare-icon">🏆</div><div class="compare-text">動画を<br>選択</div>
+        </div>
+        <div id="wrap-pro" style="display:none;">
+          <video id="vid-pro" controls playsinline loop style="width:100%;max-height:280px;object-fit:contain;background:#000;border-radius:10px;display:block;"></video>
+          <div class="speed-controls">
+            <span class="speed-label">速度：</span>
+            <button class="speed-btn" onclick="setSpeed('vid-pro',0.25,this)">0.25x</button>
+            <button class="speed-btn" onclick="setSpeed('vid-pro',0.5,this)">0.5x</button>
+            <button class="speed-btn active-speed" onclick="setSpeed('vid-pro',1,this)">1x</button>
+            <button class="speed-btn" onclick="setSpeed('vid-pro',1.5,this)">1.5x</button>
+          </div>
+          <div class="trim-controls" id="trim-pro">
+            <div class="trim-label">✂️ 再生範囲</div>
+            <div class="trim-row">
+              <span class="trim-time-label">開始</span>
+              <input type="range" class="trim-slider" id="trim-pro-start" min="0" max="100" value="0" step="0.1" oninput="updateTrim('vid-pro','trim-pro-start','trim-pro-end','trim-pro-start-val')">
+              <span class="trim-val" id="trim-pro-start-val">0.0s</span>
+            </div>
+            <div class="trim-row">
+              <span class="trim-time-label">終了</span>
+              <input type="range" class="trim-slider" id="trim-pro-end" min="0" max="100" value="100" step="0.1" oninput="updateTrim('vid-pro','trim-pro-start','trim-pro-end','trim-pro-end-val')">
+              <span class="trim-val" id="trim-pro-end-val">--s</span>
+            </div>
+            <button class="trim-loop-btn" id="trim-pro-btn" onclick="toggleTrimLoop('vid-pro','trim-pro-start','trim-pro-end',this)">▶ この範囲をループ再生</button>
+          </div>
+          <button onclick="resetVideo('up-pro','vid-pro','wrap-pro','box-pro')" style="width:100%;margin-top:6px;padding:8px;background:none;border:1px solid rgba(255,255,255,.1);border-radius:8px;color:var(--gray);font-size:11px;cursor:pointer;">🔄 動画を変更</button>
+        </div>
+        <input type="file" id="up-pro" accept="video/*" style="display:none" onchange="loadCompareVideo(this,'vid-pro','wrap-pro','box-pro','trim-pro')">
+      </div>
+      <div class="compare-col">
+        <div class="compare-col-label" style="color:var(--green-light);">MY SWING</div>
+        <div class="compare-upload-box" id="box-pro-me" onclick="triggerUpload('up-pro-me')">
+          <div class="compare-icon">📱</div><div class="compare-text">自分の動画<br>を選択</div>
+        </div>
+        <div id="wrap-pro-me" style="display:none;">
+          <video id="vid-pro-me" controls playsinline loop style="width:100%;max-height:280px;object-fit:contain;background:#000;border-radius:10px;display:block;"></video>
+          <div class="speed-controls">
+            <span class="speed-label">速度：</span>
+            <button class="speed-btn" onclick="setSpeed('vid-pro-me',0.25,this)">0.25x</button>
+            <button class="speed-btn" onclick="setSpeed('vid-pro-me',0.5,this)">0.5x</button>
+            <button class="speed-btn active-speed" onclick="setSpeed('vid-pro-me',1,this)">1x</button>
+            <button class="speed-btn" onclick="setSpeed('vid-pro-me',1.5,this)">1.5x</button>
+          </div>
+          <div class="trim-controls" id="trim-pro-me">
+            <div class="trim-label">✂️ 再生範囲</div>
+            <div class="trim-row">
+              <span class="trim-time-label">開始</span>
+              <input type="range" class="trim-slider" id="trim-pro-me-start" min="0" max="100" value="0" step="0.1" oninput="updateTrim('vid-pro-me','trim-pro-me-start','trim-pro-me-end','trim-pro-me-start-val')">
+              <span class="trim-val" id="trim-pro-me-start-val">0.0s</span>
+            </div>
+            <div class="trim-row">
+              <span class="trim-time-label">終了</span>
+              <input type="range" class="trim-slider" id="trim-pro-me-end" min="0" max="100" value="100" step="0.1" oninput="updateTrim('vid-pro-me','trim-pro-me-start','trim-pro-me-end','trim-pro-me-end-val')">
+              <span class="trim-val" id="trim-pro-me-end-val">--s</span>
+            </div>
+            <button class="trim-loop-btn" id="trim-pro-me-btn" onclick="toggleTrimLoop('vid-pro-me','trim-pro-me-start','trim-pro-me-end',this)">▶ この範囲をループ再生</button>
+          </div>
+          <button onclick="resetVideo('up-pro-me','vid-pro-me','wrap-pro-me','box-pro-me')" style="width:100%;margin-top:6px;padding:8px;background:none;border:1px solid rgba(255,255,255,.1);border-radius:8px;color:var(--gray);font-size:11px;cursor:pointer;">🔄 動画を変更</button>
+        </div>
+        <input type="file" id="up-pro-me" accept="video/*" style="display:none" onchange="loadCompareVideo(this,'vid-pro-me','wrap-pro-me','box-pro-me','trim-pro-me')">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROGRESS PAGE -->
+<div id="page-progress" class="page">
+  <p class="section-title">改善記録</p>
+  <div id="progress-list"></div>
+  <div id="empty-progress" class="card" style="text-align:center;padding:32px 20px;">
+    <div style="font-size:48px;margin-bottom:12px;">🏌️</div>
+    <p style="color:var(--gray);font-size:13px;">チェックシートを記録すると<br>ここに練習履歴が表示されます</p>
+  </div>
+</div>
+
+<!-- SHARE MODAL -->
+<div class="modal-overlay" id="shareModal">
+  <div class="modal">
+    <div class="modal-title">📤 シェア内容</div>
+    <div class="share-preview" id="shareContent"></div>
+    <button class="btn btn-share" onclick="copyToClipboard()">📋 コピーして送る</button>
+    <button class="btn btn-outline" onclick="openLine()">💚 LINEで送る</button>
+    <button class="modal-close" onclick="closeModal('shareModal')">キャンセル</button>
+  </div>
+</div>
+
+<!-- RECORD DETAIL/EDIT MODAL -->
+<div class="modal-overlay" id="recordModal">
+  <div class="modal">
+    <div class="modal-title">📋 練習記録</div>
+    <div id="recordModalContent"></div>
+    <button class="modal-close" onclick="closeModal('recordModal')">閉じる</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const now = new Date();
+document.getElementById('dateDisplay').textContent =
+  `${now.getMonth()+1}/${now.getDate()} ${['日','月','火','水','木','金','土'][now.getDay()]}`;
+
+// ===== DRILL DATA =====
+const DRILLS = [
+  // setup
+  { id:'d1', cat:'setup', title:'前傾固定ドリル', symptom:'前傾が不安定', focus:'前傾を崩さない', level:'★',
+    videoUrl:'https://youtube.com/shorts/eGR2kN4rQhA?si=Tz5Rx9zdib99LTij',
+    failVideoUrl:'https://youtube.com/shorts/f04eiUNlsuQ?si=S8uEcv-TagNzzOxC',
+    failVideoTitle:'前傾固定ドリル【深掘り版】',
+    steps:['①クラブを持たず前傾だけ作る','②手を胸の前でクロスする','③そのまま軽くスイング動作'] },
+  { id:'d2', cat:'setup', title:'ボール位置固定ドリル', symptom:'ボール位置がズレる', focus:'毎回同じ位置', level:'★',
+    videoUrl:'https://youtube.com/shorts/8X52UJRhyLE?si=bslxSqOaILXAU2G9',
+    failVideoUrl:'https://youtube.com/shorts/Eg8LIHAlrzQ?si=GLrHnohp7_0GYxFd',
+    failVideoTitle:'ボール位置固定ドリル【深掘り版】',
+    steps:['①クラブとボールを地面に置いて基準を作る','②ボールと目標の後方線上から構えに入る','③毎回同じ位置にボールとスタンスをセット'] },
+  { id:'d3', cat:'setup', title:'肘曲げドリル', symptom:'肘が離れる / 力む', focus:'肩は脱力', level:'★',
+    videoUrl:'https://youtube.com/shorts/wkC2HazwZIE?si=pR_JpEdOdrrd4wK1',
+    failVideoUrl:'https://youtube.com/shorts/kR0UJbIl7Bg?si=vK_-F5rRHEv-wB64',
+    failVideoTitle:'肘曲げドリル【深掘り版】',
+    steps:['①両肘を曲げて完全に体にくっ付ける','②肘を内側に入れる','③そのままハーフスイング'] },
+  // lower
+  { id:'d4', cat:'lower', title:'左足フィニッシュドリル', symptom:'右に残る', focus:'最後は左足だけで立つ', level:'★',
+    videoUrl:'https://youtube.com/shorts/51h4w58Dz3g?si=0HbyhaEI5jK-5aRk',
+    failVideoUrl:'https://youtube.com/shorts/ocSP_dLiZqA?si=lBc_phwJqaitMA7d',
+    failVideoTitle:'左足フィニッシュドリル【深掘り版】',
+    steps:['①打った後、左足だけで立つ','②右足は地面から離す','③最初から左足体重でOK'] },
+  { id:'d5', cat:'lower', title:'前傾キープハーフスイング', symptom:'伸び上がり', focus:'胸を下げる', level:'★★',
+    videoUrl:'https://youtube.com/shorts/kvj4PzWi6vI?si=oahwRGjmgnRWxVXY',
+    failVideoUrl:'https://youtube.com/shorts/532VdsY-s5I?si=GUsrvE7RulkkG6MZ',
+    failVideoTitle:'前傾キープドリル【深掘り版】',
+    steps:['①腰〜腰のスイング幅で打つ','②ダウンスイングで股関節を意識（お尻と太ももを使う）','③胸が下を向いたまま打つ'] },
+  // upper
+  { id:'d6', cat:'upper', title:'体回旋ドリル', symptom:'手打ち', focus:'体で振る', level:'★',
+    steps:['①両肘を曲げて完全に体にくっ付ける','②肘を内側に入れる','③そのままハーフスイング'] },
+  { id:'d7', cat:'upper', title:'大きく回るドリル', symptom:'回旋不足', focus:'大きく回る', level:'★',
+    videoUrl:'https://youtube.com/shorts/qZLQT2-lZXM?si=hcFlAGxgEa7HRST8',
+    failVideoUrl:'https://youtube.com/shorts/iDfXBlHpy1g?si=7Ch0IHSnq47r12K_',
+    failVideoTitle:'大きく回るドリル【深掘り版】',
+    steps:['①バックスイングで胸を90°以上しっかり回す（顔もついていってOK）','②フォローも同様に大きく回す','③ゆっくりでOK'] },
+  // face
+  { id:'d8', cat:'face', title:'ハーフスイングフェース意識（捕まえ）', symptom:'開く（スライス）', focus:'フェースを閉じる', level:'★',
+    videoUrl:'https://youtube.com/shorts/myfoicJwPwQ?si=yTJabZZgdLwCNwg9',
+    failVideoUrl:'https://youtube.com/shorts/-oz9uFT7RwM?si=2gmYfwMmvc45rdpw',
+    failVideoTitle:'ハーフスイング捕まえドリル【深掘り版】',
+    steps:['①腰〜腰で振る','②少しフックグリップで持つ','③フェースを閉じる意識で出球を左に出す'] },
+  { id:'d9', cat:'face', title:'ハーフスイングフェース意識（押し出し）', symptom:'被る（引っ掛け）', focus:'フェースを返さない', level:'★',
+    videoUrl:'https://youtube.com/shorts/40qkgYX-pPM?si=EvKknTklHsLWkT4F',
+    failVideoUrl:'https://youtube.com/shorts/XSYhdViTFj0?si=O0aBZUAPIk6ybLCW',
+    failVideoTitle:'ハーフスイング押し出しドリル【深掘り版】',
+    steps:['①インパクトで開き気味意識','②フェースを返さない','③少しウィークグリップで持ち出球を右に出す'] },
+  { id:'d10', cat:'face', title:'片手打ちドリル（フェース）', symptom:'フェースが安定しない', focus:'フェース感じる', level:'★★',
+    videoUrl:'https://youtube.com/shorts/JhnkRHC5lDo?si=a4uw2jRdIeTlbl9t',
+    failVideoUrl:'https://youtube.com/shorts/8swzK-FS470?si=lkJ2XIW_KrUkGU1p',
+    failVideoTitle:'片手打ちドリル【深掘り版】',
+    steps:['①右手 or 左手のみで持つ','②肘を体に付けたままハーフスイング','③ゆっくりスイング（当てるだけ）'] },
+  // meet
+  { id:'d11', cat:'meet', title:'ゆっくり芯当てドリル', symptom:'トップ・ダフリ', focus:'芯で捉える', level:'★',
+    videoUrl:'https://youtube.com/shorts/pWBVu2QSFgs?si=uTe2JuHXqg1t3REZ',
+    failVideoUrl:'https://youtube.com/shorts/3jOFREm-EkY?si=jtJK5KpmbaJA7tcg',
+    failVideoTitle:'ゆっくり芯当てドリル【深掘り版】',
+    steps:['①フルスイング禁止、ゆっくり打つ・脱力する','②構えで高さを合わせる','③ダフるなら高く、トップなら低く構える'] },
+  { id:'d12', cat:'meet', title:'近くに立って打つドリル', symptom:'シャンク・ヒールに当たる', focus:'先で捉える', level:'★★',
+    videoUrl:'https://youtube.com/shorts/Fza8lRkdue0?si=zCrMBGaYu_OyV9BF',
+    failVideoUrl:'https://youtube.com/shorts/aL1F2uVg0-Q?si=3PIriMW3Yr5dMlt0',
+    failVideoTitle:'近くに立って打つドリル【深掘り版】',
+    steps:['①つま先からヘッド1個分空けてボールを置く','②1ヤードずつ順に10ヤードまで打つ','③5球打ったら次の距離に進む'] },
+  { id:'d13', cat:'meet', title:'遠くに立って打つドリル', symptom:'トゥ（先）に当たる', focus:'ヒールで捉える', level:'★★',
+    videoUrl:'https://youtube.com/shorts/jUjHcYHZiis?si=VPuZwDav7Cm05WEm',
+    failVideoUrl:'https://youtube.com/shorts/6tVmLvuLhxU?si=7dclMFdPrU3WDNyO',
+    failVideoTitle:'遠くに立って打つドリル【深掘り版】',
+    steps:['①普段よりヘッド1個分遠くに構える','②5球連続ヒールに当てる','③ミスしたらリセット'] },
+  { id:'d14', cat:'meet', title:'片手打ちドリル（ミート）', symptom:'当たりがバラバラ', focus:'フェース感じる', level:'★★',
+    videoUrl:'https://youtube.com/shorts/JhnkRHC5lDo?si=a4uw2jRdIeTlbl9t',
+    failVideoUrl:'https://youtube.com/shorts/8swzK-FS470?si=lkJ2XIW_KrUkGU1p',
+    failVideoTitle:'片手打ちドリル【深掘り版】',
+    steps:['①右手 or 左手のみで持つ','②肘を体につけたままハーフスイング','③ゆっくりスイング（当てるだけ）'] },
+];
+
+const CAT_LABELS = { setup:'① セットアップ', lower:'② 下半身', upper:'③ 上半身', face:'④ フェース', meet:'⑤ ミート率' };
+
+// ===== RATINGS =====
+const ratings = {};
+function setRating(btn, key, type) {
+  btn.closest('.rating-group').querySelectorAll('.rating-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  ratings[key] = type;
+}
+
+// ===== PAGE NAV =====
+function showPage(name, btn) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  if(btn) btn.classList.add('active');
+}
+
+// ===== THEME SELECTOR =====
+let selectedThemeId = null;
+let sessionResult = null;
+
+function buildThemeSelector() {
+  const container = document.getElementById('theme-selector');
+  ['setup','lower','upper','face','meet'].forEach(cat => {
+    const drills = DRILLS.filter(d=>d.cat===cat);
+    const group = document.createElement('div');
+    group.className = 'theme-group';
+    group.innerHTML = `<div class="theme-group-label">${CAT_LABELS[cat]}</div>`;
+    drills.forEach(d => {
+      const opt = document.createElement('div');
+      opt.className = 'theme-option';
+      opt.dataset.id = d.id;
+      opt.innerHTML = `<div class="theme-radio"></div><div><div class="theme-option-text">${d.title}</div><div class="theme-option-sub">症状：${d.symptom}　${d.level}</div></div>`;
+      opt.addEventListener('click', ()=>selectTheme(opt, d));
+      group.appendChild(opt);
+    });
+    container.appendChild(group);
+  });
+}
+
+function selectTheme(el, drill) {
+  document.querySelectorAll('.theme-option').forEach(o=>o.classList.remove('checked'));
+  el.classList.add('checked');
+  selectedThemeId = drill.id;
+  sessionResult = null;
+  renderDrillPanel(drill, document.getElementById('drill-detail-panel'));
+}
+
+function renderDrillPanel(drill, panel) {
+  const videoHTML = drill.videoUrl ? ytLink(drill.videoUrl, drill.title) : '';
+  const steps = drill.steps.map(s=>`<div class="drill-step">${s}</div>`).join('');
+  panel.style.display = 'block';
+  panel.innerHTML = `
+    <div style="background:var(--dark3);border-radius:14px;padding:18px;border-left:3px solid var(--green-light);margin-top:12px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+        <div style="font-size:15px;font-weight:700;">${drill.title}</div>
+        <div style="font-size:13px;color:var(--gold);">${drill.level}</div>
+      </div>
+      <div class="drill-symptom" style="margin-bottom:12px;">症状：${drill.symptom}</div>
+      ${videoHTML}
+      <div class="drill-steps" style="margin-bottom:12px;">${steps}</div>
+      <div class="drill-focus">意識：「${drill.focus}」</div>
+      <div class="improvement-btns" id="imp-btns">
+        <button class="imp-btn imp-btn-yes" onclick="markImproved(true)">✅ 改善できた！</button>
+        <button class="imp-btn imp-btn-no" onclick="markImproved(false)">❌ できなかった</button>
+      </div>
+    </div>`;
+  panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function ytLink(url, title) {
+  return `<a href="${url}" target="_blank" style="display:flex;align-items:center;gap:10px;background:rgba(255,0,0,.12);border:1px solid rgba(255,0,0,.3);border-radius:10px;padding:10px 14px;text-decoration:none;margin-bottom:12px;">
+    <div style="width:32px;height:32px;background:#ff0000;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">▶</div>
+    <div><div style="font-size:12px;font-weight:700;color:#fff;">参考動画を見る</div><div style="font-size:10px;color:var(--gray);margin-top:2px;">${title}</div></div>
+  </a>`;
+}
+
+function markImproved(yes) {
+  const impBtns = document.getElementById('imp-btns');
+  sessionResult = yes ? 'improved' : 'not-improved';
+  if (yes) {
+    showToast('🎉 改善できた！記録しました');
+    if(impBtns) impBtns.innerHTML = `<div style="text-align:center;padding:12px;color:var(--green-light);font-weight:700;font-size:14px;">✅ 改善できた！</div>`;
+    const old = document.getElementById('fail-drill-panel');
+    if(old) old.remove();
+  } else {
+    showToast('💪 もう一度挑戦！');
+    if(impBtns) impBtns.innerHTML = `<div style="text-align:center;padding:12px;color:#e67e22;font-weight:700;font-size:14px;">❌ できなかった</div>`;
+    showFailDrill();
+  }
+}
+
+function showFailDrill() {
+  const old = document.getElementById('fail-drill-panel');
+  if(old) old.remove();
+  const drill = DRILLS.find(d=>d.id===selectedThemeId);
+  if(!drill) return;
+
+  const panel = document.createElement('div');
+  panel.id = 'fail-drill-panel';
+  panel.style.cssText = 'margin-top:12px;';
+
+  // If drill has specific fail video, show it. Otherwise show next drill in category.
+  if (drill.failVideoUrl) {
+    panel.innerHTML = `
+      <div style="background:var(--dark3);border-radius:14px;padding:18px;border-left:3px solid #e67e22;">
+        <div style="font-size:11px;color:#e67e22;font-weight:700;letter-spacing:2px;margin-bottom:12px;">💡 さらに深めよう</div>
+        ${ytLink(drill.failVideoUrl, drill.failVideoTitle || drill.title+'【深追い版】')}
+        <div style="font-size:12px;color:var(--gray);line-height:1.7;">同じドリルをさらに深掘りした動画です。もう一度確認してから再チャレンジしましょう。</div>
+      </div>`;
+  } else {
+    // show next drill in same category
+    const next = DRILLS.filter(d=>d.cat===drill.cat && d.id!==drill.id)[0];
+    if(next) {
+      const steps = next.steps.map(s=>`<div class="drill-step">${s}</div>`).join('');
+      const nv = next.videoUrl ? ytLink(next.videoUrl, next.title) : '';
+      panel.innerHTML = `
+        <div style="background:var(--dark3);border-radius:14px;padding:18px;border-left:3px solid #e67e22;">
+          <div style="font-size:11px;color:#e67e22;font-weight:700;letter-spacing:2px;margin-bottom:10px;">💡 別のドリルも試してみよう</div>
+          <div style="font-size:14px;font-weight:700;margin-bottom:6px;">${next.title}</div>
+          <div class="drill-symptom" style="margin-bottom:10px;">症状：${next.symptom}</div>
+          ${nv}
+          <div class="drill-steps" style="margin-bottom:10px;">${steps}</div>
+          <div class="drill-focus">意識：「${next.focus}」</div>
+        </div>`;
+    } else {
+      panel.innerHTML = `<div style="background:var(--dark3);border-radius:14px;padding:18px;border-left:3px solid #e67e22;font-size:13px;color:var(--gray);">引き続き同じドリルを繰り返し練習しましょう。焦らず1つずつ！</div>`;
+    }
+  }
+
+  document.getElementById('drill-detail-panel').appendChild(panel);
+  panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+// ===== BUILD DRILL PAGE =====
+function buildDrillPage() {
+  const list = document.getElementById('drill-list');
+  const catOrder = ['setup','lower','upper','face','meet'];
+  catOrder.forEach(cat => {
+    const title = document.createElement('div');
+    title.className = 'drill-section-title';
+    title.dataset.cat = cat;
+    title.textContent = CAT_LABELS[cat];
+    list.appendChild(title);
+    DRILLS.filter(d=>d.cat===cat).forEach(d => {
+      const card = document.createElement('div');
+      card.className = 'drill-card';
+      card.dataset.category = cat;
+      card.dataset.id = d.id;
+      const videoHTML = d.videoUrl ? ytLink(d.videoUrl, d.title) : '';
+      const steps = d.steps.map(s=>`<div class="drill-step">${s}</div>`).join('');
+      card.innerHTML = `
+        <div class="drill-header-row"><div class="drill-title">${d.title}</div><div class="drill-level">${d.level}</div></div>
+        <div class="drill-symptom">症状：${d.symptom}</div>
+        <div class="drill-steps" style="margin-top:10px;">${steps}</div>
+        <div class="drill-focus">意識：「${d.focus}」</div>
+        <div style="margin-top:8px;">${videoHTML}</div>
+        <div style="margin-top:6px;"><span class="drill-tag">${CAT_LABELS[cat]}</span><span class="drill-tag">${d.level}</span></div>`;
+      list.appendChild(card);
+    });
+  });
+}
+
+function filterDrills(cat, btn) {
+  document.querySelectorAll('.drill-filter-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  document.querySelectorAll('.drill-card').forEach(c=>{c.style.display=(cat==='all'||c.dataset.category===cat)?'block':'none';});
+  document.querySelectorAll('.drill-section-title').forEach(t=>{t.style.display=(cat==='all'||t.dataset.cat===cat)?'block':'none';});
+}
+
+// ===== VIDEO UPLOAD - iOS Safari / file://対応 =====
+function triggerUpload(inputId) {
+  document.getElementById(inputId).click();
+}
+
+const trimLoopTimers = {};
+
+function loadCompareVideo(input, vidId, wrapId, boxId, trimId) {
+  const file = input.files[0];
+  if(!file) return;
+
+  const wrap = document.getElementById(wrapId);
+  const box  = document.getElementById(boxId);
+  const vid  = document.getElementById(vidId);
+
+  wrap.style.display = 'block';
+  box.style.display  = 'none';
+  vid.style.display  = 'none';
+
+  const loadingDiv = document.createElement('div');
+  loadingDiv.id = vidId + '-loading';
+  loadingDiv.style.cssText = 'padding:20px;text-align:center;color:var(--gray);font-size:12px;';
+  loadingDiv.textContent = '⏳ 動画を読み込み中...';
+  wrap.insertBefore(loadingDiv, vid);
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const ld = document.getElementById(vidId + '-loading');
+    if(ld) ld.remove();
+
+    vid.src = e.target.result;
+    vid.style.display = 'block';
+    vid.load();
+
+    // Stop any existing loop
+    if(trimLoopTimers[vidId]) {
+      clearInterval(trimLoopTimers[vidId]);
+      delete trimLoopTimers[vidId];
+    }
+
+    // Init trim sliders once metadata loads
+    vid.onloadedmetadata = function() {
+      const dur = vid.duration;
+      if(!isFinite(dur) || isNaN(dur)) return;
+      const startSlider = document.getElementById(trimId+'-start');
+      const endSlider   = document.getElementById(trimId+'-end');
+      const startVal    = document.getElementById(trimId+'-start-val');
+      const endVal      = document.getElementById(trimId+'-end-val');
+      if(!startSlider) return;
+      startSlider.max = dur;
+      startSlider.value = 0;
+      endSlider.max = dur;
+      endSlider.value = dur;
+      startVal.textContent = '0.0s';
+      endVal.textContent   = dur.toFixed(1)+'s';
+      // Reset loop button
+      const loopBtn = document.getElementById(trimId+'-btn');
+      if(loopBtn) { loopBtn.classList.remove('active'); loopBtn.textContent = '▶ この範囲をループ再生'; }
+    };
+
+    wrap.querySelectorAll('.speed-btn').forEach(b => {
+      b.classList.remove('active-speed');
+      if(b.textContent === '1x') b.classList.add('active-speed');
+    });
+    vid.playbackRate = 1;
+    showToast('✅ 動画を選択しました。▶ を押して再生');
+  };
+  reader.onerror = function() {
+    showToast('❌ 動画の読み込みに失敗しました');
+    wrap.style.display = 'none';
+    box.style.display = 'flex';
+  };
+  reader.readAsDataURL(file);
+}
+
+function updateTrim(vidId, startId, endId, valId) {
+  const vid   = document.getElementById(vidId);
+  const start = parseFloat(document.getElementById(startId).value);
+  const end   = parseFloat(document.getElementById(endId).value);
+  const valEl = document.getElementById(valId);
+
+  // Keep start < end with at least 0.5s gap
+  const startEl = document.getElementById(startId);
+  const endEl   = document.getElementById(endId);
+  if(startEl === document.getElementById(valId.replace('-val','').replace('-start','-start').replace('-end','-start')) ) {
+    if(start >= end - 0.5) endEl.value = Math.min(parseFloat(endEl.max), start + 0.5);
+  } else {
+    if(end <= start + 0.5) startEl.value = Math.max(0, end - 0.5);
+  }
+
+  const s = parseFloat(startEl.value);
+  const e = parseFloat(endEl.value);
+  valEl.textContent = valId.includes('start') ? s.toFixed(1)+'s' : e.toFixed(1)+'s';
+}
+
+function toggleTrimLoop(vidId, startId, endId, btn) {
+  const vid = document.getElementById(vidId);
+  if(!vid.src && !vid.currentSrc) { showToast('先に動画を選択してください'); return; }
+
+  if(trimLoopTimers[vidId]) {
+    // Stop loop
+    clearInterval(trimLoopTimers[vidId]);
+    delete trimLoopTimers[vidId];
+    btn.classList.remove('active');
+    btn.textContent = '▶ この範囲をループ再生';
+    vid.loop = true;
+    return;
+  }
+
+  // Start loop
+  const getStart = () => parseFloat(document.getElementById(startId).value) || 0;
+  const getEnd   = () => parseFloat(document.getElementById(endId).value)   || vid.duration;
+
+  vid.currentTime = getStart();
+  vid.play().catch(()=>{});
+  btn.classList.add('active');
+  btn.textContent = '⏹ ループ停止';
+
+  trimLoopTimers[vidId] = setInterval(() => {
+    if(vid.paused) return;
+    if(vid.currentTime >= getEnd() - 0.05) {
+      vid.currentTime = getStart();
+    }
+  }, 50);
+}
+
+function resetVideo(inputId, vidId, wrapId, boxId) {
+  const vid = document.getElementById(vidId);
+  vid.pause();
+  vid.removeAttribute('src');
+  vid.load();
+  vid.style.display = 'none';
+  document.getElementById(wrapId).style.display = 'none';
+  document.getElementById(boxId).style.display = 'flex';
+  document.getElementById(inputId).value = '';
+}
+
+function setSpeed(vidId, speed, btn) {
+  const vid = document.getElementById(vidId);
+  if(vid) { vid.playbackRate = speed; }
+  btn.closest('.speed-controls').querySelectorAll('.speed-btn').forEach(b=>b.classList.remove('active-speed'));
+  btn.classList.add('active-speed');
+}
+
+// ===== RECORDS =====
+const sessionRecords = [];
+
+function saveSession() {
+  const focusPoint = document.getElementById('focus-point').value;
+  const improvement = document.getElementById('improvement-note').value;
+  const drill = DRILLS.find(d=>d.id===selectedThemeId);
+  const ratingLabels = { good:'◎ 良い', mid:'○ 改善余地あり', bad:'△ 改善必要' };
+  const checkKeys = [
+    {label:'前傾姿勢',key:'setup1'},{label:'ボール位置',key:'setup2'},{label:'肘の位置',key:'setup3'},
+    {label:'体重移動',key:'lower1'},{label:'伸び上がり',key:'lower2'},
+    {label:'回旋',key:'upper1'},{label:'フェース',key:'face1'},{label:'ミート率',key:'meet1'}
+  ];
+  const checks = checkKeys.map(i=>({label:i.label, val:ratings[i.key]?ratingLabels[ratings[i.key]]:''}));
+  sessionRecords.unshift({ date:new Date(), focusPoint:focusPoint||'（未記入）', improvement:improvement||'（未記入）', drill, result:sessionResult, checks });
+  renderProgressList();
+  showToast('✅ 記録を保存しました！');
+}
+
+function renderProgressList() {
+  const list = document.getElementById('progress-list');
+  const empty = document.getElementById('empty-progress');
+  list.innerHTML = '';
+  empty.style.display = sessionRecords.length===0?'block':'none';
+  const MONS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  sessionRecords.forEach((rec,idx)=>{
+    const mon = MONS[rec.date.getMonth()];
+    const rc = rec.result==='improved'?'status-improved':rec.result==='not-improved'?'status-bad':'status-new';
+    const rl = rec.result==='improved'?'✅ 改善':'❌ できず';
+    const item = document.createElement('div');
+    item.className = 'progress-item';
+    item.innerHTML = `
+      <div class="progress-date">${rec.date.getDate()}<span>${mon}</span></div>
+      <div class="progress-info"><div class="progress-title">${rec.focusPoint}</div><div class="progress-sub">${rec.drill?rec.drill.title:'自由練習'}</div></div>
+      <div class="progress-status ${rc}">${rec.result?rl:'記録済み'}</div>`;
+    item.addEventListener('click',()=>openRecordModal(idx));
+    list.appendChild(item);
+  });
+}
+
+function openRecordModal(idx) {
+  const rec = sessionRecords[idx];
+  const DAYS = ['日','月','火','水','木','金','土'];
+  const ratingLabels = { good:'◎ 良い', mid:'○ 改善余地あり', bad:'△ 改善必要' };
+  const rl = rec.result==='improved'?'<span style="color:var(--green-light)">✅ 改善できた</span>':rec.result==='not-improved'?'<span style="color:#e67e22">❌ できなかった</span>':'—';
+
+  // Check rows — each editable via radio-like select
+  const checkKeys = ['前傾姿勢','ボール位置','肘の位置','体重移動','伸び上がり','回旋','フェース','ミート率'];
+  const checkVals = ['','◎ 良い','○ 改善余地あり','△ 改善必要'];
+  const checksHtml = rec.checks.map((c,ci)=>{
+    const btns = checkVals.map(v=>{
+      const active = c.val===v && v!=='' ? 'background:var(--gold);color:var(--dark);border-color:var(--gold);' : '';
+      return v==='' ? '' : `<button onclick="editCheckVal(${idx},${ci},'${v}',this)" style="padding:3px 8px;border-radius:12px;border:1px solid rgba(255,255,255,.2);background:none;color:var(--gray);font-size:10px;cursor:pointer;${active}">${v}</button>`;
+    }).join('');
+    return `<div style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04);">
+      <div style="font-size:12px;color:var(--gray);margin-bottom:4px;">${c.label}</div>
+      <div style="display:flex;gap:4px;flex-wrap:wrap;">${btns}</div>
+    </div>`;
+  }).join('');
+
+  // Drill selector
+  const drillOptions = DRILLS.map(d=>`<option value="${d.id}" ${rec.drill&&rec.drill.id===d.id?'selected':''}>${d.title}</option>`).join('');
+
+  // Result selector
+  const resultOptions = [
+    {v:'',l:'（未選択）'},
+    {v:'improved',l:'✅ 改善できた'},
+    {v:'not-improved',l:'❌ できなかった'}
+  ].map(o=>`<option value="${o.v}" ${rec.result===o.v||(!rec.result&&o.v==='')?'selected':''}>${o.l}</option>`).join('');
+
+  document.getElementById('recordModalContent').innerHTML = `
+    <div style="font-size:12px;color:var(--gold);letter-spacing:2px;margin-bottom:16px;">${rec.date.getMonth()+1}/${rec.date.getDate()} (${DAYS[rec.date.getDay()]})</div>
+
+    <div style="font-size:11px;color:var(--gold);letter-spacing:1px;margin-bottom:8px;">📋 スイングチェック</div>
+    <div style="background:var(--dark3);border-radius:10px;padding:12px;margin-bottom:14px;">${checksHtml}</div>
+
+    <div style="font-size:11px;color:var(--gold);letter-spacing:1px;margin-bottom:6px;">重点ポイント</div>
+    <input class="field-input" id="edit-focus" value="${rec.focusPoint}" style="margin-bottom:14px;">
+
+    <div style="font-size:11px;color:var(--gold);letter-spacing:1px;margin-bottom:6px;">改善内容</div>
+    <textarea class="field-textarea" id="edit-improvement" style="margin-bottom:14px;">${rec.improvement}</textarea>
+
+    <div style="font-size:11px;color:var(--gold);letter-spacing:1px;margin-bottom:6px;">練習ドリル</div>
+    <select id="edit-drill" class="field-input" style="margin-bottom:14px;">
+      <option value="">（なし）</option>
+      ${drillOptions}
+    </select>
+
+    <div style="font-size:11px;color:var(--gold);letter-spacing:1px;margin-bottom:6px;">結果</div>
+    <select id="edit-result" class="field-input" style="margin-bottom:20px;">${resultOptions}</select>
+
+    <button class="btn btn-primary" onclick="saveEditRecord(${idx})" style="margin-bottom:8px;">💾 編集を保存</button>
+    <button id="delete-btn-${idx}" onclick="deleteRecord(${idx})" style="width:100%;padding:13px;border-radius:12px;border:1px solid #c0392b;background:none;color:#c0392b;font-family:'Noto Sans JP',sans-serif;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:1px;">🗑 この記録を削除</button>
+    <div id="delete-confirm-${idx}" style="display:none;flex-direction:column;gap:8px;margin-top:4px;">
+      <p style="font-size:12px;color:var(--gray);text-align:center;">本当に削除しますか？</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <button onclick="cancelDelete(${idx})" style="padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,.15);background:none;color:var(--gray);font-family:'Noto Sans JP',sans-serif;font-size:13px;cursor:pointer;">キャンセル</button>
+        <button onclick="confirmDelete(${idx})" style="padding:12px;border-radius:10px;border:none;background:#c0392b;color:white;font-family:'Noto Sans JP',sans-serif;font-size:13px;font-weight:700;cursor:pointer;">削除する</button>
+      </div>
+    </div>
+  `;
+  document.getElementById('recordModal').classList.add('active');
+}
+
+function editCheckVal(recIdx, checkIdx, val, btn) {
+  sessionRecords[recIdx].checks[checkIdx].val = val;
+  // Update button styles in this row
+  btn.closest('div').querySelectorAll('button').forEach(b=>{
+    b.style.background='none'; b.style.color='var(--gray)'; b.style.borderColor='rgba(255,255,255,.2)';
+  });
+  btn.style.background='var(--gold)'; btn.style.color='var(--dark)'; btn.style.borderColor='var(--gold)';
+}
+
+function saveEditRecord(idx) {
+  const rec = sessionRecords[idx];
+  rec.focusPoint = document.getElementById('edit-focus').value || '（未記入）';
+  rec.improvement = document.getElementById('edit-improvement').value || '（未記入）';
+  const drillId = document.getElementById('edit-drill').value;
+  rec.drill = drillId ? DRILLS.find(d=>d.id===drillId)||null : null;
+  const resultVal = document.getElementById('edit-result').value;
+  rec.result = resultVal || null;
+  renderProgressList();
+  closeModal('recordModal');
+  showToast('✅ 編集を保存しました');
+}
+
+function deleteRecord(idx) {
+  // Mobile-safe: replace buttons with confirm UI inline
+  const btn = document.getElementById('delete-btn-'+idx);
+  const confirmDiv = document.getElementById('delete-confirm-'+idx);
+  if(confirmDiv) {
+    confirmDiv.style.display = 'flex';
+    if(btn) btn.style.display = 'none';
+  }
+}
+
+function confirmDelete(idx) {
+  sessionRecords.splice(idx, 1);
+  renderProgressList();
+  closeModal('recordModal');
+  showToast('🗑 記録を削除しました');
+}
+
+function cancelDelete(idx) {
+  const btn = document.getElementById('delete-btn-'+idx);
+  const confirmDiv = document.getElementById('delete-confirm-'+idx);
+  if(confirmDiv) confirmDiv.style.display = 'none';
+  if(btn) btn.style.display = 'block';
+}
+
+// ===== SHARE =====
+function openShareModal() {
+  const fp = document.getElementById('focus-point').value||'（未入力）';
+  const imp = document.getElementById('improvement-note').value||'（未入力）';
+  const drill = DRILLS.find(d=>d.id===selectedThemeId);
+  const themeStr = drill?`・${drill.title}（意識：${drill.focus}）`:'（未選択）';
+  const ratingLabels = {good:'◎ 良い',mid:'○ 改善余地あり',bad:'△ 改善必要'};
+  const checks = [
+    {label:'前傾姿勢',key:'setup1'},{label:'ボール位置',key:'setup2'},{label:'肘の位置',key:'setup3'},
+    {label:'体重移動',key:'lower1'},{label:'伸び上がり',key:'lower2'},
+    {label:'回旋',key:'upper1'},{label:'フェース',key:'face1'},{label:'ミート率',key:'meet1'}
+  ].filter(i=>ratings[i.key]).map(i=>`・${i.label}：${ratingLabels[ratings[i.key]]}`).join('\n')||'（未評価）';
+  const resultStr = sessionResult==='improved'?'✅ 改善できた':sessionResult==='not-improved'?'❌ できなかった':'—';
+  document.getElementById('shareContent').textContent =
+`📋 スイングチェックシート
+${now.getMonth()+1}/${now.getDate()}
+
+【評価】
+${checks}
+
+【重点ポイント】
+${fp}
+
+【改善内容】
+${imp}
+
+【本日の練習テーマ】
+${themeStr}
+
+【結果】${resultStr}
+
+━━━━━━━━━━━
+SWING LAB で記録中 🏌️`;
+  document.getElementById('shareModal').classList.add('active');
+}
+
+function copyToClipboard() {
+  navigator.clipboard.writeText(document.getElementById('shareContent').textContent).then(()=>{closeModal('shareModal');showToast('📋 コピーしました！');});
+}
+function openLine() {
+  window.open(`https://line.me/R/msg/text/?${encodeURIComponent(document.getElementById('shareContent').textContent)}`,'_blank');
+}
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('active');}));
+
+function addYoutubeLink() {
+  const url = document.getElementById('yt-url').value;
+  const name = document.getElementById('yt-name').value||url;
+  if(!url){showToast('❌ URLを入力してください');return;}
+  const a = document.createElement('a');
+  a.className='yt-card'; a.href=url; a.target='_blank';
+  a.innerHTML=`<div class="yt-icon">▶</div><div class="yt-info"><div class="yt-title">${name}</div><div class="yt-sub">追加した動画</div></div>`;
+  document.getElementById('video-list').prepend(a);
+  document.getElementById('yt-url').value=''; document.getElementById('yt-name').value='';
+  showToast('✅ 動画を追加しました');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+// Init
+buildThemeSelector();
+buildDrillPage();
+</script>
+</body>
+</html>
