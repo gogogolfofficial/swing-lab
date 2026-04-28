@@ -28,32 +28,32 @@
   *{box-sizing:border-box;margin:0;padding:0;}
   body{background:var(--dark);color:var(--white);font-family:'Noto Sans JP',sans-serif;min-height:100vh;overflow-x:hidden;}
   body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(26,122,74,.15) 0%,transparent 50%),radial-gradient(ellipse at 80% 80%,rgba(201,168,76,.08) 0%,transparent 50%);pointer-events:none;z-index:0;}
-
+ 
   /* HEADER */
   .header{position:sticky;top:0;z-index:100;background:rgba(26,26,22,.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,.2);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;}
   .logo{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:4px;background:linear-gradient(135deg,var(--gold),var(--green-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
   .logo span{font-size:10px;letter-spacing:2px;display:block;color:var(--gray);-webkit-text-fill-color:var(--gray);font-family:'Noto Sans JP',sans-serif;font-weight:300;margin-top:-4px;}
   .date-badge{background:var(--dark3);border:1px solid rgba(201,168,76,.3);border-radius:20px;padding:6px 14px;font-size:11px;color:var(--gold);letter-spacing:1px;}
-
+ 
   /* NAV */
   .nav-tabs{display:flex;background:var(--dark2);border-bottom:1px solid rgba(255,255,255,.05);overflow-x:auto;scrollbar-width:none;position:sticky;top:65px;z-index:99;}
   .nav-tabs::-webkit-scrollbar{display:none;}
   .tab-btn{flex:none;padding:14px 20px;background:none;border:none;color:var(--gray);font-family:'Noto Sans JP',sans-serif;font-size:12px;letter-spacing:1px;cursor:pointer;transition:all .2s;border-bottom:2px solid transparent;white-space:nowrap;}
   .tab-btn.active{color:var(--gold);border-bottom-color:var(--gold);}
   .tab-btn .tab-icon{font-size:16px;display:block;margin-bottom:2px;}
-
+ 
   /* PAGES */
   .page{display:none;padding:20px;position:relative;z-index:1;}
   .page.active{display:block;animation:fadeIn .3s ease;}
   @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-
+ 
   /* SECTION TITLE */
   .section-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;color:var(--gold);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
   .section-title::after{content:'';flex:1;height:1px;background:linear-gradient(to right,rgba(201,168,76,.4),transparent);}
-
+ 
   /* CARD */
   .card{background:var(--dark2);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:20px;margin-bottom:16px;}
-
+ 
   /* CHECK */
   .check-category{background:var(--dark3);border-radius:12px;padding:16px;margin-bottom:12px;}
   .check-category-title{font-size:13px;font-weight:700;color:var(--green-light);letter-spacing:2px;margin-bottom:14px;text-transform:uppercase;}
@@ -68,7 +68,7 @@
   .rating-btn.selected.good{background:var(--green-light);color:var(--dark);}
   .rating-btn.selected.mid{background:var(--gold);color:var(--dark);}
   .rating-btn.selected.bad{background:#e67e22;color:var(--dark);}
-
+ 
   /* INPUTS */
   .field-group{margin-bottom:16px;}
   .field-label{font-size:11px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:8px;display:block;}
@@ -77,10 +77,10 @@
   select.field-input option{background:var(--dark2);color:var(--white);}
   .field-input:focus,.field-textarea:focus{outline:none;border-color:var(--green-light);}
   .field-textarea{min-height:80px;}
-
+ 
   /* MESSAGE BOX */
   .message-box{background:linear-gradient(135deg,rgba(26,122,74,.2),rgba(201,168,76,.1));border:1px solid rgba(201,168,76,.3);border-radius:12px;padding:16px 20px;margin-top:16px;font-size:13px;line-height:1.8;color:var(--gold-light);letter-spacing:.5px;}
-
+ 
   /* BUTTONS */
   .btn{width:100%;padding:16px;border-radius:12px;border:none;font-family:'Noto Sans JP',sans-serif;font-size:14px;font-weight:700;letter-spacing:2px;cursor:pointer;transition:all .2s;margin-bottom:10px;}
   .btn-primary{background:linear-gradient(135deg,var(--green),var(--green-light));color:var(--white);}
@@ -88,14 +88,14 @@
   .btn-gold{background:linear-gradient(135deg,var(--gold-light),var(--gold));color:var(--dark);}
   .btn-outline{background:none;border:1.5px solid var(--green-light);color:var(--green-light);}
   .btn-share{background:linear-gradient(135deg,#0088cc,#0077b5);color:white;}
-
+ 
   /* IMPROVEMENT BTNS */
   .improvement-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;}
   .imp-btn{padding:14px;border-radius:12px;border:none;font-family:'Noto Sans JP',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:1px;}
   .imp-btn-yes{background:linear-gradient(135deg,var(--green),var(--green-light));color:white;}
   .imp-btn-no{background:var(--dark3);border:1.5px solid #e67e22;color:#e67e22;}
   .imp-btn:hover{transform:scale(1.02);}
-
+ 
   /* DRILL */
   .drill-filter-btn{padding:7px 14px;border-radius:20px;border:1.5px solid rgba(255,255,255,.15);background:none;color:var(--gray);font-size:11px;font-family:'Noto Sans JP',sans-serif;cursor:pointer;transition:all .2s;white-space:nowrap;}
   .drill-filter-btn.active{background:var(--gold);border-color:var(--gold);color:var(--dark);font-weight:700;}
@@ -111,7 +111,7 @@
   .drill-step{font-size:12px;color:var(--white);padding-left:12px;border-left:2px solid rgba(255,255,255,.1);line-height:1.5;}
   .drill-focus{font-size:12px;font-weight:700;color:var(--green-light);background:rgba(26,122,74,.15);border-radius:6px;padding:6px 10px;margin-bottom:10px;}
   .drill-tag{display:inline-block;background:rgba(26,122,74,.3);color:var(--green-light);border-radius:20px;padding:3px 10px;font-size:10px;letter-spacing:1px;margin-top:8px;margin-right:4px;}
-
+ 
   /* THEME SELECTOR */
   .theme-group{background:var(--dark3);border-radius:10px;padding:10px 12px;margin-bottom:6px;}
   .theme-group-label{font-size:10px;color:var(--gold);letter-spacing:1.5px;font-weight:700;margin-bottom:8px;text-transform:uppercase;}
@@ -123,7 +123,7 @@
   .theme-option-text{font-size:13px;color:var(--white);flex:1;line-height:1.4;}
   .theme-option-sub{font-size:10px;color:var(--gray);margin-top:1px;}
   .theme-badge{background:var(--green);color:white;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;display:flex;align-items:center;gap:4px;}
-
+ 
   /* VIDEO PLAYER */
   .video-wrapper{position:relative;background:var(--dark3);border-radius:12px;overflow:hidden;margin-bottom:10px;}
   .video-wrapper video{width:100%;display:block;max-height:400px;object-fit:contain;}
@@ -131,7 +131,7 @@
   .speed-btn{padding:4px 10px;border-radius:20px;border:1px solid rgba(255,255,255,.2);background:none;color:var(--gray);font-size:11px;font-family:'Noto Sans JP',sans-serif;cursor:pointer;transition:all .15s;}
   .speed-btn.active-speed{background:var(--gold);border-color:var(--gold);color:var(--dark);font-weight:700;}
   .speed-label{font-size:10px;color:var(--gray);letter-spacing:1px;}
-
+ 
   /* COMPARE */
   .compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
   .compare-col{display:flex;flex-direction:column;gap:6px;}
@@ -140,7 +140,7 @@
   .compare-upload-box:hover{border-color:var(--gold);}
   .compare-icon{font-size:36px;opacity:.4;}
   .compare-text{font-size:11px;color:var(--gray);letter-spacing:1px;text-align:center;}
-
+ 
   /* YT CARD */
   .yt-card{background:var(--dark3);border-radius:14px;padding:16px;margin-bottom:10px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .2s;text-decoration:none;}
   .yt-card:hover{background:rgba(255,0,0,.1);}
@@ -148,7 +148,7 @@
   .yt-info{flex:1;}
   .yt-title{font-size:13px;font-weight:700;color:var(--white);margin-bottom:4px;line-height:1.4;}
   .yt-sub{font-size:11px;color:var(--gray);}
-
+ 
   /* PROGRESS */
   .progress-item{background:var(--dark3);border-radius:14px;padding:16px;margin-bottom:12px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .2s;}
   .progress-item:hover{border:1px solid rgba(201,168,76,.3);}
@@ -161,7 +161,7 @@
   .status-improved{background:rgba(26,122,74,.3);color:var(--green-light);}
   .status-bad{background:rgba(230,126,34,.2);color:#e67e22;}
   .status-new{background:rgba(255,255,255,.08);color:var(--gray);}
-
+ 
   /* PRO */
   .pro-select-btn{flex:none;padding:8px 16px;border-radius:20px;border:1.5px solid rgba(255,255,255,.15);background:none;color:var(--gray);font-size:12px;font-family:'Noto Sans JP',sans-serif;cursor:pointer;transition:all .2s;white-space:nowrap;}
   .pro-select-btn.active-pro{border-color:var(--gold);color:var(--gold);font-weight:700;}
@@ -171,7 +171,7 @@
   .pro-points{display:flex;flex-direction:column;gap:8px;text-align:left;}
   .pro-point-item{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--white);line-height:1.5;}
   .pro-point-num{background:var(--gold);color:var(--dark);width:18px;height:18px;border-radius:50%;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
-
+ 
   /* MODAL */
   .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:200;align-items:flex-end;justify-content:center;}
   .modal-overlay.active{display:flex;}
@@ -180,11 +180,11 @@
   .modal-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;color:var(--gold);margin-bottom:20px;text-align:center;}
   .share-preview{background:var(--dark3);border-radius:12px;padding:16px;margin-bottom:16px;font-size:13px;line-height:1.8;color:var(--white);white-space:pre-line;}
   .modal-close{width:100%;padding:14px;background:none;border:1px solid rgba(255,255,255,.1);border-radius:10px;color:var(--gray);font-family:'Noto Sans JP',sans-serif;font-size:14px;cursor:pointer;margin-top:8px;}
-
+ 
   /* TOAST */
   .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--green);color:white;padding:12px 24px;border-radius:30px;font-size:13px;font-weight:700;letter-spacing:1px;transition:transform .3s ease;z-index:300;white-space:nowrap;}
   .toast.show{transform:translateX(-50%) translateY(0);}
-
+ 
   .trim-controls{background:var(--dark3);border-radius:10px;padding:10px 12px;margin-top:8px;}
   .trim-label{font-size:10px;color:var(--gold);letter-spacing:1px;font-weight:700;margin-bottom:8px;}
   .trim-row{display:flex;align-items:center;gap:6px;margin-bottom:6px;}
@@ -194,14 +194,14 @@
   .trim-val{font-size:10px;color:var(--white);width:32px;text-align:right;flex-shrink:0;}
   .trim-loop-btn{width:100%;padding:8px;border-radius:8px;border:1px solid var(--green-light);background:none;color:var(--green-light);font-family:'Noto Sans JP',sans-serif;font-size:11px;font-weight:700;cursor:pointer;margin-top:4px;transition:all .2s;}
   .trim-loop-btn.active{background:var(--green-light);color:var(--dark);}
-
+ 
   ::-webkit-scrollbar{width:4px;}
   ::-webkit-scrollbar-track{background:var(--dark);}
   ::-webkit-scrollbar-thumb{background:var(--dark3);border-radius:2px;}
 </style>
 </head>
 <body>
-
+ 
 <!-- LOGIN SCREEN -->
 <div id="login-screen">
   <div class="login-logo">SWING LAB</div>
@@ -219,15 +219,15 @@
     <button class="login-btn" id="login-btn" onclick="doLogin()">ログイン</button>
   </div>
 </div>
-
+ 
 <!-- APP (shown after login) -->
 <div id="app">
-
+ 
 <div class="header">
   <div class="logo">SWING LAB<span>ゴルフ改善トラッカー</span></div>
   <button class="logout-btn" onclick="doLogout()">ログアウト</button>
 </div>
-
+ 
 <nav class="nav-tabs">
   <button class="tab-btn active" onclick="showPage('check',this)"><span class="tab-icon">📋</span>チェック</button>
   <button class="tab-btn" onclick="showPage('drill',this)"><span class="tab-icon">🏋️</span>ドリル</button>
@@ -235,11 +235,11 @@
   <button class="tab-btn" onclick="showPage('compare',this)"><span class="tab-icon">⚡</span>比較</button>
   <button class="tab-btn" onclick="showPage('progress',this)"><span class="tab-icon">📈</span>記録</button>
 </nav>
-
+ 
 <!-- CHECK PAGE -->
 <div id="page-check" class="page active">
   <p class="section-title">スイングチェック</p>
-
+ 
   <div class="check-category">
     <div class="check-category-title">① セットアップ（構え）</div>
     <div class="check-item"><span class="check-label">前傾姿勢</span><div class="rating-group"><button class="rating-btn good" onclick="setRating(this,'setup1','good')">◎</button><button class="rating-btn mid" onclick="setRating(this,'setup1','mid')">○</button><button class="rating-btn bad" onclick="setRating(this,'setup1','bad')">△</button></div></div>
@@ -263,7 +263,7 @@
     <div class="check-category-title">⑤ ミート率</div>
     <div class="check-item"><span class="check-label">芯に当たっているか</span><div class="rating-group"><button class="rating-btn good" onclick="setRating(this,'meet1','good')">◎</button><button class="rating-btn mid" onclick="setRating(this,'meet1','mid')">○</button><button class="rating-btn bad" onclick="setRating(this,'meet1','bad')">△</button></div></div>
   </div>
-
+ 
   <div style="background:#ffffff;border-radius:14px;padding:14px 18px;margin-bottom:16px;box-shadow:0 2px 12px rgba(0,0,0,0.3);">
     <div style="font-size:13px;font-weight:700;color:#111;margin-bottom:8px;">📌 改善の優先順位：基本は上から順に直す</div>
     <div style="display:flex;flex-direction:column;gap:4px;">
@@ -274,7 +274,7 @@
       <div style="font-size:13px;color:#222;padding:5px 0;">5. ミート</div>
     </div>
   </div>
-
+ 
   <div class="card">
     <p class="section-title" style="font-size:16px;">本日のポイント</p>
     <div class="field-group">
@@ -297,7 +297,7 @@
     </div>
   </div>
 </div>
-
+ 
 <!-- DRILL PAGE -->
 <div id="page-drill" class="page">
   <p class="section-title">練習ドリル</p>
@@ -314,7 +314,7 @@
   </div>
   <div id="drill-list"></div>
 </div>
-
+ 
 <!-- VIDEO PAGE -->
 <div id="page-video" class="page">
   <p class="section-title">参考動画</p>
@@ -334,11 +334,11 @@
     <a class="yt-card" href="https://www.youtube.com/results?search_query=ゴルフ+ミート率アップ+練習" target="_blank"><div class="yt-icon">▶</div><div class="yt-info"><div class="yt-title">ミート率を上げる効果的な練習方法</div><div class="yt-sub">ミート率 / 精度向上</div></div></a>
   </div>
 </div>
-
+ 
 <!-- COMPARE PAGE -->
 <div id="page-compare" class="page">
   <p class="section-title">スイング比較</p>
-
+ 
   <!-- Before/After -->
   <div class="card">
     <p style="font-size:13px;color:var(--gold);font-weight:700;letter-spacing:1px;margin-bottom:14px;">📹 ビフォー・アフター比較</p>
@@ -409,7 +409,7 @@
       </div>
     </div>
   </div>
-
+ 
   <!-- Swing Compare -->
   <p class="section-title" style="font-size:16px;">スイング比較</p>
   <div class="card" style="padding:16px;">
@@ -482,7 +482,7 @@
     </div>
   </div>
 </div>
-
+ 
 <!-- PROGRESS PAGE -->
 <div id="page-progress" class="page">
   <p class="section-title">改善記録</p>
@@ -492,7 +492,7 @@
     <p style="color:var(--gray);font-size:13px;">チェックシートを記録すると<br>ここに練習履歴が表示されます</p>
   </div>
 </div>
-
+ 
 <!-- SHARE MODAL -->
 <div class="modal-overlay" id="shareModal">
   <div class="modal">
@@ -503,7 +503,7 @@
     <button class="modal-close" onclick="closeModal('shareModal')">キャンセル</button>
   </div>
 </div>
-
+ 
 <!-- RECORD DETAIL/EDIT MODAL -->
 <div class="modal-overlay" id="recordModal">
   <div class="modal">
@@ -512,14 +512,14 @@
     <button class="modal-close" onclick="closeModal('recordModal')">閉じる</button>
   </div>
 </div>
-
+ 
 <div class="toast" id="toast"></div>
-
+ 
 <script>
 const now = new Date();
 document.getElementById('dateDisplay').textContent =
   `${now.getMonth()+1}/${now.getDate()} ${['日','月','火','水','木','金','土'][now.getDay()]}`;
-
+ 
 // ===== DRILL DATA =====
 const DRILLS = [
   // setup
@@ -595,9 +595,9 @@ const DRILLS = [
     failVideoTitle:'片手打ちドリル【深掘り版】',
     steps:['①右手 or 左手のみで持つ','②肘を体につけたままハーフスイング','③ゆっくりスイング（当てるだけ）'] },
 ];
-
+ 
 const CAT_LABELS = { setup:'① セットアップ', lower:'② 下半身', upper:'③ 上半身', face:'④ フェース', meet:'⑤ ミート率' };
-
+ 
 // ===== RATINGS =====
 const ratings = {};
 function setRating(btn, key, type) {
@@ -605,7 +605,7 @@ function setRating(btn, key, type) {
   btn.classList.add('selected');
   ratings[key] = type;
 }
-
+ 
 // ===== PAGE NAV =====
 function showPage(name, btn) {
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
@@ -613,11 +613,11 @@ function showPage(name, btn) {
   document.getElementById('page-'+name).classList.add('active');
   if(btn) btn.classList.add('active');
 }
-
+ 
 // ===== THEME SELECTOR =====
 let selectedThemeId = null;
 let sessionResult = null;
-
+ 
 function buildThemeSelector() {
   const container = document.getElementById('theme-selector');
   ['setup','lower','upper','face','meet'].forEach(cat => {
@@ -636,7 +636,7 @@ function buildThemeSelector() {
     container.appendChild(group);
   });
 }
-
+ 
 function selectTheme(el, drill) {
   document.querySelectorAll('.theme-option').forEach(o=>o.classList.remove('checked'));
   el.classList.add('checked');
@@ -644,7 +644,7 @@ function selectTheme(el, drill) {
   sessionResult = null;
   renderDrillPanel(drill, document.getElementById('drill-detail-panel'));
 }
-
+ 
 function renderDrillPanel(drill, panel) {
   const videoHTML = drill.videoUrl ? ytLink(drill.videoUrl, drill.title) : '';
   const steps = drill.steps.map(s=>`<div class="drill-step">${s}</div>`).join('');
@@ -666,14 +666,14 @@ function renderDrillPanel(drill, panel) {
     </div>`;
   panel.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
-
+ 
 function ytLink(url, title) {
   return `<a href="${url}" target="_blank" style="display:flex;align-items:center;gap:10px;background:rgba(255,0,0,.12);border:1px solid rgba(255,0,0,.3);border-radius:10px;padding:10px 14px;text-decoration:none;margin-bottom:12px;">
     <div style="width:32px;height:32px;background:#ff0000;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">▶</div>
     <div><div style="font-size:12px;font-weight:700;color:#fff;">参考動画を見る</div><div style="font-size:10px;color:var(--gray);margin-top:2px;">${title}</div></div>
   </a>`;
 }
-
+ 
 function markImproved(yes) {
   const impBtns = document.getElementById('imp-btns');
   sessionResult = yes ? 'improved' : 'not-improved';
@@ -688,17 +688,17 @@ function markImproved(yes) {
     showFailDrill();
   }
 }
-
+ 
 function showFailDrill() {
   const old = document.getElementById('fail-drill-panel');
   if(old) old.remove();
   const drill = DRILLS.find(d=>d.id===selectedThemeId);
   if(!drill) return;
-
+ 
   const panel = document.createElement('div');
   panel.id = 'fail-drill-panel';
   panel.style.cssText = 'margin-top:12px;';
-
+ 
   // If drill has specific fail video, show it. Otherwise show next drill in category.
   if (drill.failVideoUrl) {
     panel.innerHTML = `
@@ -726,11 +726,11 @@ function showFailDrill() {
       panel.innerHTML = `<div style="background:var(--dark3);border-radius:14px;padding:18px;border-left:3px solid #e67e22;font-size:13px;color:var(--gray);">引き続き同じドリルを繰り返し練習しましょう。焦らず1つずつ！</div>`;
     }
   }
-
+ 
   document.getElementById('drill-detail-panel').appendChild(panel);
   panel.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
-
+ 
 // ===== BUILD DRILL PAGE =====
 function buildDrillPage() {
   const list = document.getElementById('drill-list');
@@ -759,43 +759,43 @@ function buildDrillPage() {
     });
   });
 }
-
+ 
 function filterDrills(cat, btn) {
   document.querySelectorAll('.drill-filter-btn').forEach(b=>b.classList.remove('active'));
   if(btn) btn.classList.add('active');
   document.querySelectorAll('.drill-card').forEach(c=>{c.style.display=(cat==='all'||c.dataset.category===cat)?'block':'none';});
   document.querySelectorAll('.drill-section-title').forEach(t=>{t.style.display=(cat==='all'||t.dataset.cat===cat)?'block':'none';});
 }
-
+ 
 // ===== VIDEO UPLOAD - GitHub Pages (HTTPS) 対応 =====
 function triggerUpload(inputId) {
   document.getElementById(inputId).click();
 }
-
+ 
 const videoObjectURLs = {};
-
+ 
 function loadCompareVideo(input, vidId, wrapId, boxId, trimId) {
   const file = input.files[0];
   if(!file) return;
-
+ 
   const wrap = document.getElementById(wrapId);
   const box  = document.getElementById(boxId);
   const vid  = document.getElementById(vidId);
-
+ 
   // 古いURLを解放
   if(videoObjectURLs[vidId]) {
     URL.revokeObjectURL(videoObjectURLs[vidId]);
   }
-
+ 
   const url = URL.createObjectURL(file);
   videoObjectURLs[vidId] = url;
-
+ 
   wrap.style.display = 'block';
   box.style.display  = 'none';
-
+ 
   vid.src = url;
   vid.load();
-
+ 
   // トリム初期化
   if(trimId) {
     vid.onloadedmetadata = function() {
@@ -814,7 +814,7 @@ function loadCompareVideo(input, vidId, wrapId, boxId, trimId) {
       if(loopBtn){ loopBtn.classList.remove('active'); loopBtn.textContent='▶ この範囲をループ再生'; }
     };
   }
-
+ 
   // 速度リセット
   wrap.querySelectorAll('.speed-btn').forEach(b => {
     b.classList.remove('active-speed');
@@ -823,15 +823,15 @@ function loadCompareVideo(input, vidId, wrapId, boxId, trimId) {
   vid.playbackRate = 1;
   showToast('✅ 動画を読み込みました');
 }
-
+ 
 const trimLoopTimers = {};
-
+ 
 function updateTrim(vidId, startId, endId, valId) {
   const vid   = document.getElementById(vidId);
   const start = parseFloat(document.getElementById(startId).value);
   const end   = parseFloat(document.getElementById(endId).value);
   const valEl = document.getElementById(valId);
-
+ 
   // Keep start < end with at least 0.5s gap
   const startEl = document.getElementById(startId);
   const endEl   = document.getElementById(endId);
@@ -840,16 +840,16 @@ function updateTrim(vidId, startId, endId, valId) {
   } else {
     if(end <= start + 0.5) startEl.value = Math.max(0, end - 0.5);
   }
-
+ 
   const s = parseFloat(startEl.value);
   const e = parseFloat(endEl.value);
   valEl.textContent = valId.includes('start') ? s.toFixed(1)+'s' : e.toFixed(1)+'s';
 }
-
+ 
 function toggleTrimLoop(vidId, startId, endId, btn) {
   const vid = document.getElementById(vidId);
   if(!vid.src && !vid.currentSrc) { showToast('先に動画を選択してください'); return; }
-
+ 
   if(trimLoopTimers[vidId]) {
     // Stop loop
     clearInterval(trimLoopTimers[vidId]);
@@ -859,16 +859,16 @@ function toggleTrimLoop(vidId, startId, endId, btn) {
     vid.loop = true;
     return;
   }
-
+ 
   // Start loop
   const getStart = () => parseFloat(document.getElementById(startId).value) || 0;
   const getEnd   = () => parseFloat(document.getElementById(endId).value)   || vid.duration;
-
+ 
   vid.currentTime = getStart();
   vid.play().catch(()=>{});
   btn.classList.add('active');
   btn.textContent = '⏹ ループ停止';
-
+ 
   trimLoopTimers[vidId] = setInterval(() => {
     if(vid.paused) return;
     if(vid.currentTime >= getEnd() - 0.05) {
@@ -876,7 +876,7 @@ function toggleTrimLoop(vidId, startId, endId, btn) {
     }
   }, 50);
 }
-
+ 
 function resetVideo(inputId, vidId, wrapId, boxId) {
   const vid = document.getElementById(vidId);
   vid.pause();
@@ -887,17 +887,17 @@ function resetVideo(inputId, vidId, wrapId, boxId) {
   document.getElementById(boxId).style.display = 'flex';
   document.getElementById(inputId).value = '';
 }
-
+ 
 function setSpeed(vidId, speed, btn) {
   const vid = document.getElementById(vidId);
   if(vid) { vid.playbackRate = speed; }
   btn.closest('.speed-controls').querySelectorAll('.speed-btn').forEach(b=>b.classList.remove('active-speed'));
   btn.classList.add('active-speed');
 }
-
+ 
 // ===== RECORDS =====
 const sessionRecords = [];
-
+ 
 function saveSession() {
   const focusPoint = document.getElementById('focus-point').value;
   const improvement = document.getElementById('improvement-note').value;
@@ -913,7 +913,7 @@ function saveSession() {
   renderProgressList();
   showToast('✅ 記録を保存しました！');
 }
-
+ 
 function renderProgressList() {
   const list = document.getElementById('progress-list');
   const empty = document.getElementById('empty-progress');
@@ -934,13 +934,13 @@ function renderProgressList() {
     list.appendChild(item);
   });
 }
-
+ 
 function openRecordModal(idx) {
   const rec = sessionRecords[idx];
   const DAYS = ['日','月','火','水','木','金','土'];
   const ratingLabels = { good:'◎ 良い', mid:'○ 改善余地あり', bad:'△ 改善必要' };
   const rl = rec.result==='improved'?'<span style="color:var(--green-light)">✅ 改善できた</span>':rec.result==='not-improved'?'<span style="color:#e67e22">❌ できなかった</span>':'—';
-
+ 
   // Check rows — each editable via radio-like select
   const checkKeys = ['前傾姿勢','ボール位置','肘の位置','体重移動','伸び上がり','回旋','フェース','ミート率'];
   const checkVals = ['','◎ 良い','○ 改善余地あり','△ 改善必要'];
@@ -954,38 +954,38 @@ function openRecordModal(idx) {
       <div style="display:flex;gap:4px;flex-wrap:wrap;">${btns}</div>
     </div>`;
   }).join('');
-
+ 
   // Drill selector
   const drillOptions = DRILLS.map(d=>`<option value="${d.id}" ${rec.drill&&rec.drill.id===d.id?'selected':''}>${d.title}</option>`).join('');
-
+ 
   // Result selector
   const resultOptions = [
     {v:'',l:'（未選択）'},
     {v:'improved',l:'✅ 改善できた'},
     {v:'not-improved',l:'❌ できなかった'}
   ].map(o=>`<option value="${o.v}" ${rec.result===o.v||(!rec.result&&o.v==='')?'selected':''}>${o.l}</option>`).join('');
-
+ 
   document.getElementById('recordModalContent').innerHTML = `
     <div style="font-size:12px;color:var(--gold);letter-spacing:2px;margin-bottom:16px;">${rec.date.getMonth()+1}/${rec.date.getDate()} (${DAYS[rec.date.getDay()]})</div>
-
+ 
     <div style="font-size:11px;color:var(--gold);letter-spacing:1px;margin-bottom:8px;">📋 スイングチェック</div>
     <div style="background:var(--dark3);border-radius:10px;padding:12px;margin-bottom:14px;">${checksHtml}</div>
-
+ 
     <div style="font-size:11px;color:var(--gold);letter-spacing:1px;margin-bottom:6px;">重点ポイント</div>
     <input class="field-input" id="edit-focus" value="${rec.focusPoint}" style="margin-bottom:14px;">
-
+ 
     <div style="font-size:11px;color:var(--gold);letter-spacing:1px;margin-bottom:6px;">改善内容</div>
     <textarea class="field-textarea" id="edit-improvement" style="margin-bottom:14px;">${rec.improvement}</textarea>
-
+ 
     <div style="font-size:11px;color:var(--gold);letter-spacing:1px;margin-bottom:6px;">練習ドリル</div>
     <select id="edit-drill" class="field-input" style="margin-bottom:14px;">
       <option value="">（なし）</option>
       ${drillOptions}
     </select>
-
+ 
     <div style="font-size:11px;color:var(--gold);letter-spacing:1px;margin-bottom:6px;">結果</div>
     <select id="edit-result" class="field-input" style="margin-bottom:20px;">${resultOptions}</select>
-
+ 
     <button class="btn btn-primary" onclick="saveEditRecord(${idx})" style="margin-bottom:8px;">💾 編集を保存</button>
     <button id="delete-btn-${idx}" onclick="deleteRecord(${idx})" style="width:100%;padding:13px;border-radius:12px;border:1px solid #c0392b;background:none;color:#c0392b;font-family:'Noto Sans JP',sans-serif;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:1px;">🗑 この記録を削除</button>
     <div id="delete-confirm-${idx}" style="display:none;flex-direction:column;gap:8px;margin-top:4px;">
@@ -998,7 +998,7 @@ function openRecordModal(idx) {
   `;
   document.getElementById('recordModal').classList.add('active');
 }
-
+ 
 function editCheckVal(recIdx, checkIdx, val, btn) {
   sessionRecords[recIdx].checks[checkIdx].val = val;
   // Update button styles in this row
@@ -1007,7 +1007,7 @@ function editCheckVal(recIdx, checkIdx, val, btn) {
   });
   btn.style.background='var(--gold)'; btn.style.color='var(--dark)'; btn.style.borderColor='var(--gold)';
 }
-
+ 
 function saveEditRecord(idx) {
   const rec = sessionRecords[idx];
   rec.focusPoint = document.getElementById('edit-focus').value || '（未記入）';
@@ -1020,7 +1020,7 @@ function saveEditRecord(idx) {
   closeModal('recordModal');
   showToast('✅ 編集を保存しました');
 }
-
+ 
 function deleteRecord(idx) {
   // Mobile-safe: replace buttons with confirm UI inline
   const btn = document.getElementById('delete-btn-'+idx);
@@ -1030,21 +1030,21 @@ function deleteRecord(idx) {
     if(btn) btn.style.display = 'none';
   }
 }
-
+ 
 function confirmDelete(idx) {
   sessionRecords.splice(idx, 1);
   renderProgressList();
   closeModal('recordModal');
   showToast('🗑 記録を削除しました');
 }
-
+ 
 function cancelDelete(idx) {
   const btn = document.getElementById('delete-btn-'+idx);
   const confirmDiv = document.getElementById('delete-confirm-'+idx);
   if(confirmDiv) confirmDiv.style.display = 'none';
   if(btn) btn.style.display = 'block';
 }
-
+ 
 // ===== SHARE =====
 function openShareModal() {
   const fp = document.getElementById('focus-point').value||'（未入力）';
@@ -1061,26 +1061,26 @@ function openShareModal() {
   document.getElementById('shareContent').textContent =
 `📋 スイングチェックシート
 ${now.getMonth()+1}/${now.getDate()}
-
+ 
 【評価】
 ${checks}
-
+ 
 【重点ポイント】
 ${fp}
-
+ 
 【改善内容】
 ${imp}
-
+ 
 【本日の練習テーマ】
 ${themeStr}
-
+ 
 【結果】${resultStr}
-
+ 
 ━━━━━━━━━━━
 SWING LAB で記録中 🏌️`;
   document.getElementById('shareModal').classList.add('active');
 }
-
+ 
 function copyToClipboard() {
   navigator.clipboard.writeText(document.getElementById('shareContent').textContent).then(()=>{closeModal('shareModal');showToast('📋 コピーしました！');});
 }
@@ -1089,7 +1089,7 @@ function openLine() {
 }
 function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('active');}));
-
+ 
 function addYoutubeLink() {
   const url = document.getElementById('yt-url').value;
   const name = document.getElementById('yt-name').value||url;
@@ -1101,36 +1101,36 @@ function addYoutubeLink() {
   document.getElementById('yt-url').value=''; document.getElementById('yt-name').value='';
   showToast('✅ 動画を追加しました');
 }
-
+ 
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg; t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'),2500);
 }
-
+ 
 // Init
 buildThemeSelector();
 buildDrillPage();
-
+ 
 // ===== SUPABASE AUTH =====
 const SUPABASE_URL  = 'https://itbmupqtpevvqwtqickb.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml0Ym11cHF0cGV2dnF3dHFpY2tiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczNDkzMzksImV4cCI6MjA5MjkyNTMzOX0.fOLVNxZi9uye2LXX0aRK-4vDiRGlb-_AZGFAezTDSMQ';
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
-
+ 
 async function doLogin() {
   const email    = document.getElementById('login-email').value.trim();
   const password = document.getElementById('login-password').value;
   const btn      = document.getElementById('login-btn');
   const errEl    = document.getElementById('login-error');
-
+ 
   if(!email || !password){ errEl.textContent = 'メールアドレスとパスワードを入力してください'; return; }
-
+ 
   btn.disabled = true;
   btn.textContent = 'ログイン中...';
   errEl.textContent = '';
-
+ 
   const { error } = await sb.auth.signInWithPassword({ email, password });
-
+ 
   if(error) {
     errEl.textContent = 'メールアドレスまたはパスワードが正しくありません';
     btn.disabled = false;
@@ -1139,12 +1139,12 @@ async function doLogin() {
     showApp();
   }
 }
-
+ 
 // Enterキーでログイン
 document.getElementById('login-password').addEventListener('keydown', e => {
   if(e.key === 'Enter') doLogin();
 });
-
+ 
 async function doLogout() {
   await sb.auth.signOut();
   document.getElementById('app').style.display = 'none';
@@ -1152,7 +1152,7 @@ async function doLogout() {
   document.getElementById('login-email').value = '';
   document.getElementById('login-password').value = '';
 }
-
+ 
 function showApp() {
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('app').style.display = 'block';
@@ -1161,7 +1161,7 @@ function showApp() {
   const el = document.getElementById('dateDisplay');
   if(el) el.textContent = `${now.getMonth()+1}/${now.getDate()} ${['日','月','火','水','木','金','土'][now.getDay()]}`;
 }
-
+ 
 // セッション確認（既にログイン済みなら自動でアプリを表示）
 sb.auth.getSession().then(({ data: { session } }) => {
   if(session) showApp();
@@ -1170,3 +1170,4 @@ sb.auth.getSession().then(({ data: { session } }) => {
 </div><!-- end #app -->
 </body>
 </html>
+ 
