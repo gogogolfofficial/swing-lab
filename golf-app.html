@@ -517,8 +517,6 @@
  
 <script>
 const now = new Date();
-document.getElementById('dateDisplay').textContent =
-  `${now.getMonth()+1}/${now.getDate()} ${['日','月','火','水','木','金','土'][now.getDay()]}`;
  
 // ===== DRILL DATA =====
 const DRILLS = [
@@ -1171,3 +1169,5 @@ sb.auth.getSession().then(({ data: { session } }) => {
 </body>
 </html>
  
+
+
