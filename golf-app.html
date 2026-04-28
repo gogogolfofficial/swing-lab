@@ -5,7 +5,21 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>SWING LAB - ゴルフ改善アプリ</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
+  /* LOGIN SCREEN */
+  #login-screen{position:fixed;inset:0;background:var(--dark);z-index:1000;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;}
+  .login-logo{font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:6px;background:linear-gradient(135deg,var(--gold),var(--green-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px;}
+  .login-sub{font-size:11px;color:var(--gray);letter-spacing:3px;margin-bottom:48px;}
+  .login-box{width:100%;max-width:360px;display:flex;flex-direction:column;gap:14px;}
+  .login-label{font-size:11px;color:var(--gold);letter-spacing:1px;margin-bottom:4px;display:block;}
+  .login-input{width:100%;background:var(--dark3);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:14px 16px;color:var(--white);font-family:'Noto Sans JP',sans-serif;font-size:15px;}
+  .login-input:focus{outline:none;border-color:var(--green-light);}
+  .login-btn{width:100%;padding:16px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--green),var(--green-light));color:white;font-family:'Noto Sans JP',sans-serif;font-size:15px;font-weight:700;letter-spacing:2px;cursor:pointer;margin-top:8px;}
+  .login-btn:disabled{opacity:.5;cursor:not-allowed;}
+  .login-error{font-size:12px;color:#e74c3c;text-align:center;min-height:18px;}
+  #app{display:none;}
+  .logout-btn{background:none;border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:6px 14px;font-size:11px;color:var(--gray);cursor:pointer;font-family:'Noto Sans JP',sans-serif;}
   :root {
     --green:#1a7a4a; --green-light:#2ea865; --gold:#c9a84c; --gold-light:#e8c97a;
     --white:#f5f5f0; --gray:#8a8a7a; --dark:#1a1a16; --dark2:#242420; --dark3:#2e2e28;
@@ -188,9 +202,30 @@
 </head>
 <body>
 
+<!-- LOGIN SCREEN -->
+<div id="login-screen">
+  <div class="login-logo">SWING LAB</div>
+  <div class="login-sub">ゴルフ改善トラッカー</div>
+  <div class="login-box">
+    <div>
+      <label class="login-label">メールアドレス</label>
+      <input class="login-input" id="login-email" type="email" placeholder="example@email.com" autocomplete="email">
+    </div>
+    <div>
+      <label class="login-label">パスワード</label>
+      <input class="login-input" id="login-password" type="password" placeholder="パスワードを入力" autocomplete="current-password">
+    </div>
+    <div class="login-error" id="login-error"></div>
+    <button class="login-btn" id="login-btn" onclick="doLogin()">ログイン</button>
+  </div>
+</div>
+
+<!-- APP (shown after login) -->
+<div id="app">
+
 <div class="header">
   <div class="logo">SWING LAB<span>ゴルフ改善トラッカー</span></div>
-  <div class="date-badge" id="dateDisplay"></div>
+  <button class="logout-btn" onclick="doLogout()">ログアウト</button>
 </div>
 
 <nav class="nav-tabs">
@@ -732,12 +767,12 @@ function filterDrills(cat, btn) {
   document.querySelectorAll('.drill-section-title').forEach(t=>{t.style.display=(cat==='all'||t.dataset.cat===cat)?'block':'none';});
 }
 
-// ===== VIDEO UPLOAD - iOS Safari / file://対応 =====
+// ===== VIDEO UPLOAD - GitHub Pages (HTTPS) 対応 =====
 function triggerUpload(inputId) {
   document.getElementById(inputId).click();
 }
 
-const trimLoopTimers = {};
+const videoObjectURLs = {};
 
 function loadCompareVideo(input, vidId, wrapId, boxId, trimId) {
   const file = input.files[0];
@@ -747,32 +782,22 @@ function loadCompareVideo(input, vidId, wrapId, boxId, trimId) {
   const box  = document.getElementById(boxId);
   const vid  = document.getElementById(vidId);
 
+  // 古いURLを解放
+  if(videoObjectURLs[vidId]) {
+    URL.revokeObjectURL(videoObjectURLs[vidId]);
+  }
+
+  const url = URL.createObjectURL(file);
+  videoObjectURLs[vidId] = url;
+
   wrap.style.display = 'block';
   box.style.display  = 'none';
-  vid.style.display  = 'none';
 
-  const loadingDiv = document.createElement('div');
-  loadingDiv.id = vidId + '-loading';
-  loadingDiv.style.cssText = 'padding:20px;text-align:center;color:var(--gray);font-size:12px;';
-  loadingDiv.textContent = '⏳ 動画を読み込み中...';
-  wrap.insertBefore(loadingDiv, vid);
+  vid.src = url;
+  vid.load();
 
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    const ld = document.getElementById(vidId + '-loading');
-    if(ld) ld.remove();
-
-    vid.src = e.target.result;
-    vid.style.display = 'block';
-    vid.load();
-
-    // Stop any existing loop
-    if(trimLoopTimers[vidId]) {
-      clearInterval(trimLoopTimers[vidId]);
-      delete trimLoopTimers[vidId];
-    }
-
-    // Init trim sliders once metadata loads
+  // トリム初期化
+  if(trimId) {
     vid.onloadedmetadata = function() {
       const dur = vid.duration;
       if(!isFinite(dur) || isNaN(dur)) return;
@@ -781,31 +806,25 @@ function loadCompareVideo(input, vidId, wrapId, boxId, trimId) {
       const startVal    = document.getElementById(trimId+'-start-val');
       const endVal      = document.getElementById(trimId+'-end-val');
       if(!startSlider) return;
-      startSlider.max = dur;
-      startSlider.value = 0;
-      endSlider.max = dur;
-      endSlider.value = dur;
+      startSlider.max = dur; startSlider.value = 0;
+      endSlider.max = dur;   endSlider.value = dur;
       startVal.textContent = '0.0s';
       endVal.textContent   = dur.toFixed(1)+'s';
-      // Reset loop button
       const loopBtn = document.getElementById(trimId+'-btn');
-      if(loopBtn) { loopBtn.classList.remove('active'); loopBtn.textContent = '▶ この範囲をループ再生'; }
+      if(loopBtn){ loopBtn.classList.remove('active'); loopBtn.textContent='▶ この範囲をループ再生'; }
     };
+  }
 
-    wrap.querySelectorAll('.speed-btn').forEach(b => {
-      b.classList.remove('active-speed');
-      if(b.textContent === '1x') b.classList.add('active-speed');
-    });
-    vid.playbackRate = 1;
-    showToast('✅ 動画を選択しました。▶ を押して再生');
-  };
-  reader.onerror = function() {
-    showToast('❌ 動画の読み込みに失敗しました');
-    wrap.style.display = 'none';
-    box.style.display = 'flex';
-  };
-  reader.readAsDataURL(file);
+  // 速度リセット
+  wrap.querySelectorAll('.speed-btn').forEach(b => {
+    b.classList.remove('active-speed');
+    if(b.textContent === '1x') b.classList.add('active-speed');
+  });
+  vid.playbackRate = 1;
+  showToast('✅ 動画を読み込みました');
 }
+
+const trimLoopTimers = {};
 
 function updateTrim(vidId, startId, endId, valId) {
   const vid   = document.getElementById(vidId);
@@ -1092,6 +1111,62 @@ function showToast(msg) {
 // Init
 buildThemeSelector();
 buildDrillPage();
+
+// ===== SUPABASE AUTH =====
+const SUPABASE_URL  = 'https://itbmupqtpevvqwtqickb.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml0Ym11cHF0cGV2dnF3dHFpY2tiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczNDkzMzksImV4cCI6MjA5MjkyNTMzOX0.fOLVNxZi9uye2LXX0aRK-4vDiRGlb-_AZGFAezTDSMQ';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+async function doLogin() {
+  const email    = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  const btn      = document.getElementById('login-btn');
+  const errEl    = document.getElementById('login-error');
+
+  if(!email || !password){ errEl.textContent = 'メールアドレスとパスワードを入力してください'; return; }
+
+  btn.disabled = true;
+  btn.textContent = 'ログイン中...';
+  errEl.textContent = '';
+
+  const { error } = await sb.auth.signInWithPassword({ email, password });
+
+  if(error) {
+    errEl.textContent = 'メールアドレスまたはパスワードが正しくありません';
+    btn.disabled = false;
+    btn.textContent = 'ログイン';
+  } else {
+    showApp();
+  }
+}
+
+// Enterキーでログイン
+document.getElementById('login-password').addEventListener('keydown', e => {
+  if(e.key === 'Enter') doLogin();
+});
+
+async function doLogout() {
+  await sb.auth.signOut();
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('login-email').value = '';
+  document.getElementById('login-password').value = '';
+}
+
+function showApp() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  // Init date display
+  const now = new Date();
+  const el = document.getElementById('dateDisplay');
+  if(el) el.textContent = `${now.getMonth()+1}/${now.getDate()} ${['日','月','火','水','木','金','土'][now.getDay()]}`;
+}
+
+// セッション確認（既にログイン済みなら自動でアプリを表示）
+sb.auth.getSession().then(({ data: { session } }) => {
+  if(session) showApp();
+});
 </script>
+</div><!-- end #app -->
 </body>
 </html>
