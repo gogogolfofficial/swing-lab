@@ -710,7 +710,7 @@
       </div>
     </div>
   </div>
-</div>
+</div><!-- end page-compare -->
  
 <!-- PROGRESS PAGE -->
 <div id="page-progress" class="page">
@@ -1137,27 +1137,29 @@ async function saveSession() {
   ];
   const checks = checkKeys.map(i=>({label:i.label, val:ratings[i.key]?ratingLabels[ratings[i.key]]:''}));
  
+  // ログイン中のユーザーIDを取得
+  const { data: { user } } = await sb.auth.getUser();
+  if(!user){ showToast('❌ ログインしてください'); return; }
+ 
   const record = {
+    user_id: user.id,
     focus_point: focusPoint||'（未記入）',
     improvement: improvement||'（未記入）',
     drill_id: drill?.id||null,
     drill_title: drill?.title||null,
     drill_focus: drill?.focus||null,
     result: sessionResult,
-    checks: JSON.stringify(checks),
-    created_at: new Date().toISOString()
+    checks: checks
   };
  
-  // Supabaseに保存
   const { data, error } = await sb.from('records').insert([record]).select();
   if(error) {
     console.error(error);
-    showToast('❌ 保存に失敗しました');
+    showToast('❌ 保存に失敗しました: ' + error.message);
     return;
   }
  
-  // ローカルにも追加
-  const saved = { ...record, id: data[0].id, date: new Date(record.created_at), checks, drill };
+  const saved = { ...data[0], date: new Date(data[0].created_at), checks, drill };
   sessionRecords.unshift(saved);
   renderProgressList();
   showToast('✅ 記録を保存しました！');
@@ -1171,7 +1173,7 @@ async function loadRecords() {
     sessionRecords.push({
       ...r,
       date: new Date(r.created_at),
-      checks: typeof r.checks === 'string' ? JSON.parse(r.checks) : r.checks,
+      checks: Array.isArray(r.checks) ? r.checks : (typeof r.checks === 'string' ? JSON.parse(r.checks) : []),
       drill: r.drill_id ? { id:r.drill_id, title:r.drill_title, focus:r.drill_focus } : null
     });
   });
