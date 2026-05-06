@@ -342,7 +342,6 @@
   <!-- ビフォーアフター -->
   <div class="card">
     <p style="font-size:13px;color:var(--gold);font-weight:700;letter-spacing:1px;margin-bottom:16px;">📹 ビフォー・アフター比較</p>
- 
     <div style="font-size:11px;color:var(--gray);letter-spacing:2px;font-weight:700;margin-bottom:8px;">▶ 正面</div>
     <div class="compare-grid" style="margin-bottom:20px;">
       <div class="compare-col">
@@ -358,15 +357,9 @@
             <button class="speed-btn active-speed" onclick="setSpeed('vid-bf',1,this)">1x</button>
             <button class="speed-btn" onclick="setSpeed('vid-bf',1.5,this)">1.5x</button>
           </div>
-          <div class="trim-controls" id="trim-bf">
-            <div class="trim-label">✂️ 再生範囲</div>
-            <div class="trim-row"><span class="trim-time-label">開始</span><input type="range" class="trim-slider" id="trim-bf-start" min="0" max="100" value="0" step="0.1" oninput="updateTrim('vid-bf','trim-bf-start','trim-bf-end','trim-bf-start-val')"><span class="trim-val" id="trim-bf-start-val">0.0s</span></div>
-            <div class="trim-row"><span class="trim-time-label">終了</span><input type="range" class="trim-slider" id="trim-bf-end" min="0" max="100" value="100" step="0.1" oninput="updateTrim('vid-bf','trim-bf-start','trim-bf-end','trim-bf-end-val')"><span class="trim-val" id="trim-bf-end-val">--s</span></div>
-            <button class="trim-loop-btn" id="trim-bf-btn" onclick="toggleTrimLoop('vid-bf','trim-bf-start','trim-bf-end',this)">▶ ループ再生</button>
-          </div>
           <button onclick="resetVideo('up-bf','vid-bf','wrap-bf','box-bf')" style="width:100%;margin-top:6px;padding:8px;background:none;border:1px solid rgba(255,255,255,.1);border-radius:8px;color:var(--gray);font-size:11px;cursor:pointer;">🔄 変更</button>
         </div>
-        <input type="file" id="up-bf" accept="video/*" style="display:none" onchange="loadCompareVideo(this,'vid-bf','wrap-bf','box-bf','trim-bf')">
+        <input type="file" id="up-bf" accept="video/*" style="display:none" onchange="loadCompareVideo(this,'vid-bf','wrap-bf','box-bf',null)">
       </div>
       <div class="compare-col">
         <div class="compare-col-label" style="color:var(--green-light);">AFTER</div>
@@ -381,18 +374,11 @@
             <button class="speed-btn active-speed" onclick="setSpeed('vid-af',1,this)">1x</button>
             <button class="speed-btn" onclick="setSpeed('vid-af',1.5,this)">1.5x</button>
           </div>
-          <div class="trim-controls" id="trim-af">
-            <div class="trim-label">✂️ 再生範囲</div>
-            <div class="trim-row"><span class="trim-time-label">開始</span><input type="range" class="trim-slider" id="trim-af-start" min="0" max="100" value="0" step="0.1" oninput="updateTrim('vid-af','trim-af-start','trim-af-end','trim-af-start-val')"><span class="trim-val" id="trim-af-start-val">0.0s</span></div>
-            <div class="trim-row"><span class="trim-time-label">終了</span><input type="range" class="trim-slider" id="trim-af-end" min="0" max="100" value="100" step="0.1" oninput="updateTrim('vid-af','trim-af-start','trim-af-end','trim-af-end-val')"><span class="trim-val" id="trim-af-end-val">--s</span></div>
-            <button class="trim-loop-btn" id="trim-af-btn" onclick="toggleTrimLoop('vid-af','trim-af-start','trim-af-end',this)">▶ ループ再生</button>
-          </div>
           <button onclick="resetVideo('up-af','vid-af','wrap-af','box-af')" style="width:100%;margin-top:6px;padding:8px;background:none;border:1px solid rgba(255,255,255,.1);border-radius:8px;color:var(--gray);font-size:11px;cursor:pointer;">🔄 変更</button>
         </div>
-        <input type="file" id="up-af" accept="video/*" style="display:none" onchange="loadCompareVideo(this,'vid-af','wrap-af','box-af','trim-af')">
+        <input type="file" id="up-af" accept="video/*" style="display:none" onchange="loadCompareVideo(this,'vid-af','wrap-af','box-af',null)">
       </div>
     </div>
- 
     <div style="font-size:11px;color:var(--gray);letter-spacing:2px;font-weight:700;margin-bottom:8px;">▶ 後ろから</div>
     <div class="compare-grid">
       <div class="compare-col">
@@ -408,15 +394,9 @@
             <button class="speed-btn active-speed" onclick="setSpeed('vid-bb',1,this)">1x</button>
             <button class="speed-btn" onclick="setSpeed('vid-bb',1.5,this)">1.5x</button>
           </div>
-          <div class="trim-controls" id="trim-bb">
-            <div class="trim-label">✂️ 再生範囲</div>
-            <div class="trim-row"><span class="trim-time-label">開始</span><input type="range" class="trim-slider" id="trim-bb-start" min="0" max="100" value="0" step="0.1" oninput="updateTrim('vid-bb','trim-bb-start','trim-bb-end','trim-bb-start-val')"><span class="trim-val" id="trim-bb-start-val">0.0s</span></div>
-            <div class="trim-row"><span class="trim-time-label">終了</span><input type="range" class="trim-slider" id="trim-bb-end" min="0" max="100" value="100" step="0.1" oninput="updateTrim('vid-bb','trim-bb-start','trim-bb-end','trim-bb-end-val')"><span class="trim-val" id="trim-bb-end-val">--s</span></div>
-            <button class="trim-loop-btn" id="trim-bb-btn" onclick="toggleTrimLoop('vid-bb','trim-bb-start','trim-bb-end',this)">▶ ループ再生</button>
-          </div>
           <button onclick="resetVideo('up-bb','vid-bb','wrap-bb','box-bb')" style="width:100%;margin-top:6px;padding:8px;background:none;border:1px solid rgba(255,255,255,.1);border-radius:8px;color:var(--gray);font-size:11px;cursor:pointer;">🔄 変更</button>
         </div>
-        <input type="file" id="up-bb" accept="video/*" style="display:none" onchange="loadCompareVideo(this,'vid-bb','wrap-bb','box-bb','trim-bb')">
+        <input type="file" id="up-bb" accept="video/*" style="display:none" onchange="loadCompareVideo(this,'vid-bb','wrap-bb','box-bb',null)">
       </div>
       <div class="compare-col">
         <div class="compare-col-label" style="color:var(--green-light);">AFTER</div>
@@ -431,15 +411,9 @@
             <button class="speed-btn active-speed" onclick="setSpeed('vid-ab',1,this)">1x</button>
             <button class="speed-btn" onclick="setSpeed('vid-ab',1.5,this)">1.5x</button>
           </div>
-          <div class="trim-controls" id="trim-ab">
-            <div class="trim-label">✂️ 再生範囲</div>
-            <div class="trim-row"><span class="trim-time-label">開始</span><input type="range" class="trim-slider" id="trim-ab-start" min="0" max="100" value="0" step="0.1" oninput="updateTrim('vid-ab','trim-ab-start','trim-ab-end','trim-ab-start-val')"><span class="trim-val" id="trim-ab-start-val">0.0s</span></div>
-            <div class="trim-row"><span class="trim-time-label">終了</span><input type="range" class="trim-slider" id="trim-ab-end" min="0" max="100" value="100" step="0.1" oninput="updateTrim('vid-ab','trim-ab-start','trim-ab-end','trim-ab-end-val')"><span class="trim-val" id="trim-ab-end-val">--s</span></div>
-            <button class="trim-loop-btn" id="trim-ab-btn" onclick="toggleTrimLoop('vid-ab','trim-ab-start','trim-ab-end',this)">▶ ループ再生</button>
-          </div>
           <button onclick="resetVideo('up-ab','vid-ab','wrap-ab','box-ab')" style="width:100%;margin-top:6px;padding:8px;background:none;border:1px solid rgba(255,255,255,.1);border-radius:8px;color:var(--gray);font-size:11px;cursor:pointer;">🔄 変更</button>
         </div>
-        <input type="file" id="up-ab" accept="video/*" style="display:none" onchange="loadCompareVideo(this,'vid-ab','wrap-ab','box-ab','trim-ab')">
+        <input type="file" id="up-ab" accept="video/*" style="display:none" onchange="loadCompareVideo(this,'vid-ab','wrap-ab','box-ab',null)">
       </div>
     </div>
   </div>
@@ -447,19 +421,17 @@
   <!-- プロとのスイング比較 -->
   <p class="section-title" style="font-size:16px;">プロとのスイング比較</p>
   <div class="card" style="padding:16px;">
-    <p style="font-size:12px;color:var(--gray);margin-bottom:16px;">左：プロ（固定）　右：自分の動画をアップロード</p>
- 
     <div style="font-size:11px;color:var(--gray);letter-spacing:2px;font-weight:700;margin-bottom:8px;">▶ 正面</div>
     <div class="compare-grid" style="margin-bottom:20px;">
       <div class="compare-col">
         <div class="compare-col-label" style="color:var(--gold);">プロ</div>
         <div style="background:var(--dark3);border-radius:12px;overflow:hidden;">
-          <video id="vid-pro-f" controls playsinline loop style="width:100%;max-height:240px;object-fit:contain;background:#000;display:block;" src="https://gogogolfofficial.github.io/swing-lab/%E6%AD%A3%E9%9D%A2.mp4"></video>
+          <video id="vid-pf" controls playsinline loop style="width:100%;max-height:240px;object-fit:contain;background:#000;display:block;" src="https://gogogolfofficial.github.io/swing-lab/%E6%AD%A3%E9%9D%A2.mp4"></video>
           <div class="speed-controls"><span class="speed-label">速度：</span>
-            <button class="speed-btn" onclick="setSpeed('vid-pro-f',0.25,this)">0.25x</button>
-            <button class="speed-btn" onclick="setSpeed('vid-pro-f',0.5,this)">0.5x</button>
-            <button class="speed-btn active-speed" onclick="setSpeed('vid-pro-f',1,this)">1x</button>
-            <button class="speed-btn" onclick="setSpeed('vid-pro-f',1.5,this)">1.5x</button>
+            <button class="speed-btn" onclick="setSpeed('vid-pf',0.25,this)">0.25x</button>
+            <button class="speed-btn" onclick="setSpeed('vid-pf',0.5,this)">0.5x</button>
+            <button class="speed-btn active-speed" onclick="setSpeed('vid-pf',1,this)">1x</button>
+            <button class="speed-btn" onclick="setSpeed('vid-pf',1.5,this)">1.5x</button>
           </div>
         </div>
       </div>
@@ -481,18 +453,17 @@
         <input type="file" id="up-mf" accept="video/*" style="display:none" onchange="loadCompareVideo(this,'vid-mf','wrap-mf','box-mf',null)">
       </div>
     </div>
- 
     <div style="font-size:11px;color:var(--gray);letter-spacing:2px;font-weight:700;margin-bottom:8px;">▶ 後ろから</div>
     <div class="compare-grid">
       <div class="compare-col">
         <div class="compare-col-label" style="color:var(--gold);">プロ</div>
         <div style="background:var(--dark3);border-radius:12px;overflow:hidden;">
-          <video id="vid-pro-b" controls playsinline loop style="width:100%;max-height:240px;object-fit:contain;background:#000;display:block;" src="https://gogogolfofficial.github.io/swing-lab/%E5%BE%8C%E3%82%8D.mp4"></video>
+          <video id="vid-pb" controls playsinline loop style="width:100%;max-height:240px;object-fit:contain;background:#000;display:block;" src="https://gogogolfofficial.github.io/swing-lab/%E5%BE%8C%E3%82%8D.mp4"></video>
           <div class="speed-controls"><span class="speed-label">速度：</span>
-            <button class="speed-btn" onclick="setSpeed('vid-pro-b',0.25,this)">0.25x</button>
-            <button class="speed-btn" onclick="setSpeed('vid-pro-b',0.5,this)">0.5x</button>
-            <button class="speed-btn active-speed" onclick="setSpeed('vid-pro-b',1,this)">1x</button>
-            <button class="speed-btn" onclick="setSpeed('vid-pro-b',1.5,this)">1.5x</button>
+            <button class="speed-btn" onclick="setSpeed('vid-pb',0.25,this)">0.25x</button>
+            <button class="speed-btn" onclick="setSpeed('vid-pb',0.5,this)">0.5x</button>
+            <button class="speed-btn active-speed" onclick="setSpeed('vid-pb',1,this)">1x</button>
+            <button class="speed-btn" onclick="setSpeed('vid-pb',1.5,this)">1.5x</button>
           </div>
         </div>
       </div>
@@ -515,7 +486,7 @@
       </div>
     </div>
   </div>
-</div><!-- end page-compare -->
+</div>
  
 <!-- PROGRESS PAGE -->
 <div id="page-progress" class="page">
