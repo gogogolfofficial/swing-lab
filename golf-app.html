@@ -5,8 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>GoGoGolf - 迷わず上達できるゴルフアプリ</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <style>
+  :root {
+    --green:#1a7a4a; --green-light:#2ea865; --gold:#c9a84c; --gold-light:#e8c97a;
+    --white:#f5f5f0; --gray:#8a8a7a; --dark:#1a1a16; --dark2:#242420; --dark3:#2e2e28;
+    --accent:#4ecdc4;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--dark);color:var(--white);font-family:'Noto Sans JP',sans-serif;min-height:100vh;overflow-x:hidden;}
+  body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(26,122,74,.15) 0%,transparent 50%),radial-gradient(ellipse at 80% 80%,rgba(201,168,76,.08) 0%,transparent 50%);pointer-events:none;z-index:0;}
+ 
   /* LOGIN SCREEN */
   #login-screen{position:fixed;inset:0;background:var(--dark);z-index:1000;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;}
   .login-logo{font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:6px;background:linear-gradient(135deg,var(--gold),var(--green-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px;}
@@ -20,14 +31,6 @@
   .login-error{font-size:12px;color:#e74c3c;text-align:center;min-height:18px;}
   #app{display:none;}
   .logout-btn{background:none;border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:6px 14px;font-size:11px;color:var(--gray);cursor:pointer;font-family:'Noto Sans JP',sans-serif;}
-  :root {
-    --green:#1a7a4a; --green-light:#2ea865; --gold:#c9a84c; --gold-light:#e8c97a;
-    --white:#f5f5f0; --gray:#8a8a7a; --dark:#1a1a16; --dark2:#242420; --dark3:#2e2e28;
-    --accent:#4ecdc4;
-  }
-  *{box-sizing:border-box;margin:0;padding:0;}
-  body{background:var(--dark);color:var(--white);font-family:'Noto Sans JP',sans-serif;min-height:100vh;overflow-x:hidden;}
-  body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(26,122,74,.15) 0%,transparent 50%),radial-gradient(ellipse at 80% 80%,rgba(201,168,76,.08) 0%,transparent 50%);pointer-events:none;z-index:0;}
  
   /* HEADER */
   .header{position:sticky;top:0;z-index:100;background:rgba(26,26,22,.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,168,76,.2);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;}
@@ -898,10 +901,13 @@ function setSpeed(vidId, speed, btn) {
   btn.classList.add('active-speed');
 }
  
-// ===== RECORDS (Supabase永続化) =====
+// ===== RECORDS (Firestore永続化) =====
 const sessionRecords = [];
  
 async function saveSession() {
+  const user = auth.currentUser;
+  if(!user){ showToast('❌ ログインしてください'); return; }
+ 
   const focusPoint = document.getElementById('focus-point').value;
   const improvement = document.getElementById('improvement-note').value;
   const drill = DRILLS.find(d=>d.id===selectedThemeId);
@@ -913,47 +919,53 @@ async function saveSession() {
   ];
   const checks = checkKeys.map(i=>({label:i.label, val:ratings[i.key]?ratingLabels[ratings[i.key]]:''}));
  
-  // ログイン中のユーザーIDを取得
-  const { data: { user } } = await sb.auth.getUser();
-  if(!user){ showToast('❌ ログインしてください'); return; }
- 
   const record = {
-    user_id: user.id,
+    uid: user.uid,
     focus_point: focusPoint||'（未記入）',
     improvement: improvement||'（未記入）',
     drill_id: drill?.id||null,
     drill_title: drill?.title||null,
     drill_focus: drill?.focus||null,
-    result: sessionResult,
-    checks: checks
+    result: sessionResult||null,
+    checks: checks,
+    created_at: firebase.firestore.FieldValue.serverTimestamp()
   };
  
-  const { data, error } = await sb.from('records').insert([record]).select();
-  if(error) {
-    console.error(error);
-    showToast('❌ 保存に失敗しました: ' + error.message);
-    return;
+  try {
+    const docRef = await db.collection('records').add(record);
+    const saved = { ...record, id: docRef.id, date: new Date(), checks, drill };
+    sessionRecords.unshift(saved);
+    renderProgressList();
+    showToast('✅ 記録を保存しました！');
+  } catch(e) {
+    console.error(e);
+    showToast('❌ 保存に失敗しました: ' + e.message);
   }
- 
-  const saved = { ...data[0], date: new Date(data[0].created_at), checks, drill };
-  sessionRecords.unshift(saved);
-  renderProgressList();
-  showToast('✅ 記録を保存しました！');
 }
  
 async function loadRecords() {
-  const { data, error } = await sb.from('records').select('*').order('created_at', {ascending: false});
-  if(error){ console.error(error); return; }
-  sessionRecords.length = 0;
-  data.forEach(r => {
-    sessionRecords.push({
-      ...r,
-      date: new Date(r.created_at),
-      checks: Array.isArray(r.checks) ? r.checks : (typeof r.checks === 'string' ? JSON.parse(r.checks) : []),
-      drill: r.drill_id ? { id:r.drill_id, title:r.drill_title, focus:r.drill_focus } : null
+  const user = auth.currentUser;
+  if(!user) return;
+  try {
+    const snapshot = await db.collection('records')
+      .where('uid','==',user.uid)
+      .orderBy('created_at','desc')
+      .get();
+    sessionRecords.length = 0;
+    snapshot.forEach(doc => {
+      const r = doc.data();
+      sessionRecords.push({
+        ...r,
+        id: doc.id,
+        date: r.created_at?.toDate() || new Date(),
+        checks: Array.isArray(r.checks) ? r.checks : [],
+        drill: r.drill_id ? { id:r.drill_id, title:r.drill_title, focus:r.drill_focus } : null
+      });
     });
-  });
-  renderProgressList();
+    renderProgressList();
+  } catch(e) {
+    console.error(e);
+  }
 }
  
 function renderProgressList() {
@@ -1046,18 +1058,18 @@ async function saveEditRecord(idx) {
     drill_title: drill?.title||null,
     drill_focus: drill?.focus||null,
     result: resultVal||null,
-    checks: JSON.stringify(rec.checks)
+    checks: rec.checks
   };
  
-  if(rec.id) {
-    const { error } = await sb.from('records').update(updates).eq('id', rec.id);
-    if(error){ showToast('❌ 更新に失敗しました'); return; }
+  try {
+    if(rec.id) await db.collection('records').doc(rec.id).update(updates);
+    Object.assign(sessionRecords[idx], updates, { drill, focus_point: updates.focus_point });
+    renderProgressList();
+    closeModal('recordModal');
+    showToast('✅ 編集を保存しました');
+  } catch(e) {
+    showToast('❌ 更新に失敗しました');
   }
- 
-  Object.assign(sessionRecords[idx], updates, { drill, focus_point: updates.focus_point });
-  renderProgressList();
-  closeModal('recordModal');
-  showToast('✅ 編集を保存しました');
 }
  
 function deleteRecord(idx) {
@@ -1066,23 +1078,24 @@ function deleteRecord(idx) {
   if(confirmDiv){ confirmDiv.style.display='flex'; if(btn) btn.style.display='none'; }
 }
  
-async function confirmDelete(idx) {
-  const rec = sessionRecords[idx];
-  if(rec.id) {
-    const { error } = await sb.from('records').delete().eq('id', rec.id);
-    if(error){ showToast('❌ 削除に失敗しました'); return; }
-  }
-  sessionRecords.splice(idx,1);
-  renderProgressList();
-  closeModal('recordModal');
-  showToast('🗑 記録を削除しました');
-}
- 
 function cancelDelete(idx) {
   const btn = document.getElementById('delete-btn-'+idx);
   const confirmDiv = document.getElementById('delete-confirm-'+idx);
   if(confirmDiv) confirmDiv.style.display='none';
   if(btn) btn.style.display='block';
+}
+ 
+async function confirmDelete(idx) {
+  const rec = sessionRecords[idx];
+  try {
+    if(rec.id) await db.collection('records').doc(rec.id).delete();
+    sessionRecords.splice(idx,1);
+    renderProgressList();
+    closeModal('recordModal');
+    showToast('🗑 記録を削除しました');
+  } catch(e) {
+    showToast('❌ 削除に失敗しました');
+  }
 }
  
 // ===== SHARE =====
@@ -1152,10 +1165,18 @@ function showToast(msg) {
 buildThemeSelector();
 buildDrillPage();
  
-// ===== SUPABASE AUTH =====
-const SUPABASE_URL  = 'https://itbmupqtpevvqwtqickb.supabase.co';
-const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml0Ym11cHF0cGV2dnF3dHFpY2tiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczNDkzMzksImV4cCI6MjA5MjkyNTMzOX0.fOLVNxZi9uye2LXX0aRK-4vDiRGlb-_AZGFAezTDSMQ';
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+// ===== FIREBASE AUTH =====
+const firebaseConfig = {
+  apiKey: "AIzaSyDhDL6GNLQy4KCbAxfCb_SPSmq1fiIUoQg",
+  authDomain: "gogogolf.firebaseapp.com",
+  projectId: "gogogolf",
+  storageBucket: "gogogolf.firebasestorage.app",
+  messagingSenderId: "157041869990",
+  appId: "1:157041869990:web:b44a3e87ae8144150c6067"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db   = firebase.firestore();
  
 async function doLogin() {
   const email    = document.getElementById('login-email').value.trim();
@@ -1169,28 +1190,22 @@ async function doLogin() {
   btn.textContent = 'ログイン中...';
   errEl.textContent = '';
  
-  const { error } = await sb.auth.signInWithPassword({ email, password });
- 
-  if(error) {
+  try {
+    await auth.signInWithEmailAndPassword(email, password);
+    // onAuthStateChanged が showApp() を呼ぶ
+  } catch(e) {
     errEl.textContent = 'メールアドレスまたはパスワードが正しくありません';
     btn.disabled = false;
     btn.textContent = 'ログイン';
-  } else {
-    showApp();
   }
 }
  
-// Enterキーでログイン
 document.getElementById('login-password').addEventListener('keydown', e => {
   if(e.key === 'Enter') doLogin();
 });
  
 async function doLogout() {
-  await sb.auth.signOut();
-  document.getElementById('app').style.display = 'none';
-  document.getElementById('login-screen').style.display = 'flex';
-  document.getElementById('login-email').value = '';
-  document.getElementById('login-password').value = '';
+  await auth.signOut();
 }
  
 function showApp() {
@@ -1199,16 +1214,29 @@ function showApp() {
   const now = new Date();
   const el = document.getElementById('dateDisplay');
   if(el) el.textContent = `${now.getMonth()+1}/${now.getDate()} ${['日','月','火','水','木','金','土'][now.getDay()]}`;
-  // 記録を読み込む
   loadRecords();
 }
  
-// セッション確認（既にログイン済みなら自動でアプリを表示）
-sb.auth.getSession().then(({ data: { session } }) => {
-  if(session) showApp();
+function showLogin() {
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-email').value = '';
+  document.getElementById('login-password').value = '';
+  document.getElementById('login-error').textContent = '';
+  const btn = document.getElementById('login-btn');
+  btn.disabled = false;
+  btn.textContent = 'ログイン';
+}
+ 
+// ログイン状態を監視
+auth.onAuthStateChanged(user => {
+  if(user) {
+    showApp();
+  } else {
+    showLogin();
+  }
 });
 </script>
 </div><!-- end #app -->
 </body>
 </html>
- 
