@@ -964,7 +964,32 @@ async function loadRecords() {
     });
     renderProgressList();
   } catch(e) {
-    console.error(e);
+    console.error('loadRecords error:', e);
+    // インデックスエラーの場合は順序なしで再試行
+    if(e.code === 'failed-precondition') {
+      try {
+        const snapshot2 = await db.collection('records')
+          .where('uid','==',user.uid)
+          .get();
+        sessionRecords.length = 0;
+        const docs = [];
+        snapshot2.forEach(doc => docs.push({doc, data: doc.data()}));
+        docs.sort((a,b) => (b.data.created_at?.seconds||0) - (a.data.created_at?.seconds||0));
+        docs.forEach(({doc, data: r}) => {
+          sessionRecords.push({
+            ...r,
+            id: doc.id,
+            date: r.created_at?.toDate() || new Date(),
+            checks: Array.isArray(r.checks) ? r.checks : [],
+            drill: r.drill_id ? { id:r.drill_id, title:r.drill_title, focus:r.drill_focus } : null
+          });
+        });
+        renderProgressList();
+        showToast('⚠️ インデックスを作成中です。しばらくお待ちください');
+      } catch(e2) {
+        console.error('retry error:', e2);
+      }
+    }
   }
 }
  
@@ -1240,4 +1265,3 @@ auth.onAuthStateChanged(user => {
 </div><!-- end #app -->
 </body>
 </html>
- 
